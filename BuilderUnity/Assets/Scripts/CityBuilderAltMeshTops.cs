@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class CityBuilder : MonoBehaviour{
+public class CityBuilderAltMeshTops : MonoBehaviour{
 	public static int buildingNumber = 1;
 	void Start(){
         Vector3[] exampleVertices = new Vector3[5];
