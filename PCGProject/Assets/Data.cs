@@ -14,7 +14,7 @@ public class Data : MonoBehaviour {
         type_of_file[1] = XMLParser.FileToCreate.Streets;
         parser.deleteAllFiles();
         parser.createFile(type_of_file);
-        List<List<float[]>> data = new List<List<float[]>>(); 
+        List<List<double[]>> data = new List<List<double[]>>(); 
         Debug.Log("before: " + data.Count);
         data = parser.read("Building.txt");
         Debug.Log("after: " + data.Count);
