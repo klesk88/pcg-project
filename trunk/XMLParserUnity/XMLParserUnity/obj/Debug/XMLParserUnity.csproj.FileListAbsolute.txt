@@ -1,0 +1,5 @@
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\XMLParserUnity\bin\Debug\XMLParserUnity.dll
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\XMLParserUnity\bin\Debug\XMLParserUnity.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\XMLParserUnity\obj\Debug\XMLParserUnity.dll
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\XMLParserUnity\obj\Debug\XMLParserUnity.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\XMLParserUnity\obj\Debug\XMLParserUnity.csprojResolveAssemblyReference.cache
