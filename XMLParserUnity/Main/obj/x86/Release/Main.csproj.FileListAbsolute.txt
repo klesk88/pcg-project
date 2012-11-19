@@ -1,0 +1,12 @@
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.exe.config
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.exe
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.exe
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\XMLParserUnity.dll
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\XMLParserUnity.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.csprojResolveAssemblyReference.cache
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.exe.manifest
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.application
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.exe.manifest
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.application

@@ -1,0 +1,12 @@
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.exe.config
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.exe
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.exe
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\XMLParserUnity.dll
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\XMLParserUnity.pdb
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.csprojResolveAssemblyReference.cache
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.exe.manifest
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.application
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.exe.manifest
+C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.application
