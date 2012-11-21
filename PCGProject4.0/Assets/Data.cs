@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Data : MonoBehaviour {
     public int buildingsToGenerate = 100;
     public bool generateAll = false;
-
+    public float scalingFactor = 20;
 
 	// Use this for initialization
 	void Start () {
@@ -21,12 +21,16 @@ public class Data : MonoBehaviour {
         Debug.Log("before: " + data.Count);
         data = parser.read("Building.txt");
         Debug.Log("after: " + data.Count);
-        //foreach(float f in data[3][3])
         //    Debug.Log(f);
-        LSystem lsystem = new LSystem();
+        //LSystem lsystem = new LSystem();
+        //foreach(float f in data[3][3])
+        LSystem lsystem = this.gameObject.GetComponent<LSystem>();
+        lsystem.init();
 
         for (int i = 0; i < (generateAll ? data.Count : buildingsToGenerate); i++) {
-            Vector3[] vertices = new Vector3[data[i].Count];
+            if(data[i].Count <= 2)
+                continue;
+            Vector3[] vertices = new Vector3[data[i].Count-1];
             GameObject building = new GameObject();
             building.name = "Building_" + i;
             building.transform.parent = this.gameObject.transform;
@@ -34,18 +38,34 @@ public class Data : MonoBehaviour {
             int height = 0;
             foreach (double[] dArray in data[i]) {
                 if (j < data[i].Count - 1) { // Ignore last node, since it's equal to the first
-                    vertices[j].x = (float)dArray[0];
-                    vertices[j].z = (float)dArray[1];
+                    vertices[j].x = (float)dArray[0] * scalingFactor;
+                    vertices[j].z = (float)dArray[1] * scalingFactor;
+                    //Debug.Log("x: " + vertices[j].x + "   z; " + vertices[j].z);
                     if (dArray[2] != 0)
                         height = (int)dArray[2];
                     j++;
-                }
+                }   
+            }
+            float minX = Mathf.Infinity, maxX = -Mathf.Infinity, minZ = Mathf.Infinity, maxZ = -Mathf.Infinity;
+            foreach(Vector3 vertex in vertices) {
+                if(vertex.x < minX) minX = vertex.x;
+                if(vertex.x > maxX) maxX = vertex.x;
+                if(vertex.z < minZ) minZ = vertex.z;
+                if(vertex.z > maxZ) maxZ = vertex.z;
+            }
+            Vector3 offset = new Vector3(minX + ((maxX - minX) / 2), 0, minZ + ((maxZ - minZ) / 2));
+            for(j = 0; j < vertices.Length; j++)
+                vertices[j] -= offset;
+            if(i == 1117) { // Building 1117 caused the Visualizer class to crash in the extrude function
+                Debug.Log("Vertices of Building 1117");
+                foreach(Vector3 vertex in vertices)
+                    Debug.Log(vertex);
             }
             if(height == 0)
-                lsystem.visualize(building, vertices);
-            else
-                lsystem.visualize(building, vertices, height);
-            if (i % 500 == 0 && i > 0)
+                lsystem.visualize(building/*this.gameObject*/, vertices, offset, lsystem.randHeight());
+         //   else
+         //      lsystem.visualize(building, vertices, height);
+            if (i % 100 == 0 && i > 0)
                 Debug.Log("Buildings created: " + i);
         }
     }
