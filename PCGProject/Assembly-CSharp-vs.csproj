@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{CAA66C87-90EF-C600-6482-CAB88FEF2B23}</ProjectGuid>
+	<ProjectGuid>{256B2C94-85E8-B3D5-2C8F-4C83038D9D51}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,10 +44,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
-     <Compile Include="Assets\Standard Assets\Water (Basic)\Sources\Scripts\WaterSimple.cs" />
-     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
-     <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
+     <Compile Include="Assets\Data.cs" />
+     <Compile Include="Assets\LSystem.cs" />
+     <Compile Include="Assets\Node.cs" />
+     <Compile Include="Assets\PathFinder.cs" />
+     <Compile Include="Assets\PivotManager.cs" />
+     <Compile Include="Assets\State.cs" />
+     <Compile Include="Assets\StateOld.cs" />
+     <Compile Include="Assets\Visualizer.cs" />
+     <Compile Include="Assets\VisualizerOld.cs" />
  <Reference Include="XMLParserUnity">
  <HintPath>Assets\Plugins\XMLParserUnity.dll</HintPath>
  </Reference>
