@@ -5,8 +5,11 @@ using System.Collections.Generic;
 
 public class Data : MonoBehaviour {
     public int buildingsToGenerate = 100;
-    public bool generateAll = false;
+    public bool generateAllBuildings = false;
     public float scalingFactor = 20;
+    public bool readRoads = false;
+    public int roadsToGenerate = 100;
+    public bool generateAllRoads = false;
 
 	// Use this for initialization
 	void Start () {
@@ -27,7 +30,7 @@ public class Data : MonoBehaviour {
         LSystem lsystem = this.gameObject.GetComponent<LSystem>();
         lsystem.init();
 
-        for (int i = 0; i < (generateAll ? data.Count : buildingsToGenerate); i++) {
+        for (int i = 0; i < (generateAllBuildings ? data.Count : buildingsToGenerate); i++) {
             if(data[i].Count <= 2)
                 continue;
             Vector3[] vertices = new Vector3[data[i].Count-1];
@@ -54,11 +57,6 @@ public class Data : MonoBehaviour {
             Vector3 offset = new Vector3(minX + ((maxX - minX) / 2), 0, minZ + ((maxZ - minZ) / 2));
             for(j = 0; j < vertices.Length; j++)
                 vertices[j] -= offset;
-            if(i == 1117) { // Building 1117 caused the Visualizer class to crash in the extrude function
-                Debug.Log("Vertices of Building 1117");
-                foreach(Vector3 vertex in vertices)
-                    Debug.Log(vertex);
-            }
             float randHeight = lsystem.randHeight();
             building.AddComponent("BoxCollider");
             building.GetComponent<BoxCollider>().center = new Vector3(0, randHeight / 2, 0);
@@ -71,22 +69,36 @@ public class Data : MonoBehaviour {
             if (i % 100 == 0 && i > 0)
                 Debug.Log("Buildings created: " + i);
         }
-        /** Work in progress **
-        List<List<double[]>> roadData = new List<List<double[]>>();
-        roadData = parser.read("Highway.txt");
-        for (int i = 0; i < roadData.Count; i++) {
-            if (data[i].Count <= 2)
-                continue;
-            int j = 0;
-            foreach (double[] dArray in data[i]) {
-                if (j < data[i].Count - 1) { // Ignore last node, since it's equal to the first
-                    Vector3 pos = new Vector3((float)dArray[0], 0, (float)dArray[1]);
-                    if(PathFinder.nodeMap.ContainsKey(pos))
-                        PathFinder.nodeMap[pos].addNeighbours(
-                    j++;
+
+        if (readRoads) {
+            List<List<double[]>> roadData = new List<List<double[]>>();
+            roadData = parser.read("Highway.txt");
+            for (int i = 0; i < (generateAllRoads ? roadData.Count : roadsToGenerate); i++) {
+                if (roadData[i].Count <= 2)
+                    continue;
+                for (int j = 0; j < roadData[i].Count; j++) {
+                    Vector3 pos = new Vector3((float)roadData[i][j][0] * scalingFactor, 0, (float)roadData[i][j][1] * scalingFactor);
+                    Vector3[] neighbours;
+                    if (j == 0) {
+                        neighbours = new Vector3[1];
+                        neighbours[0] = new Vector3((float)roadData[i][j + 1][0] * scalingFactor, 0, (float)roadData[i][j + 1][1] * scalingFactor);
+                    }
+                    else if (j == roadData[i].Count - 1) {
+                        neighbours = new Vector3[1];
+                        neighbours[0] = new Vector3((float)roadData[i][j - 1][0] * scalingFactor, 0, (float)roadData[i][j - 1][1] * scalingFactor);
+                    }
+                    else {
+                        neighbours = new Vector3[2];
+                        neighbours[0] = new Vector3((float)roadData[i][j - 1][0] * scalingFactor, 0, (float)roadData[i][j - 1][1] * scalingFactor);
+                        neighbours[1] = new Vector3((float)roadData[i][j + 1][0] * scalingFactor, 0, (float)roadData[i][j + 1][1] * scalingFactor);
+                    }
+                    if (PathFinder.nodeMap.ContainsKey(pos))
+                        PathFinder.nodeMap[pos].addNeighbours(neighbours);
+                    else
+                        PathFinder.nodeMap[pos] = new Node(pos, neighbours, this.gameObject);
                 }
             }
-        }*****/
+        }
     }
 
     // Update is called once per frame
