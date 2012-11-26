@@ -10,3 +10,6 @@ C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Rel
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Release\Main.application
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.exe.manifest
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Release\Main.application
+D:\PCGProject\XMLParserUnity\Main\bin\Release\Main.exe.config
+D:\PCGProject\XMLParserUnity\Main\obj\x86\Release\Main.exe
+D:\PCGProject\XMLParserUnity\Main\obj\x86\Release\Main.pdb
