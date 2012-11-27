@@ -19,24 +19,24 @@ public class Street : MonoBehaviour {
         data = parser.read("Highway.txt");
         //AttachedPathScript path = GetComponent <AttachedPathScript>();
 
-        GameObject pathMesh = new GameObject();
-        pathMesh.name = "Path";
-        pathMesh.AddComponent(typeof(MeshFilter));
-        pathMesh.AddComponent(typeof(MeshRenderer));
-        pathMesh.AddComponent("AttachedPathScript");
-
-   
-        AttachedPathScript APS = (AttachedPathScript)pathMesh.GetComponent("AttachedPathScript");
-        APS.pathMesh = pathMesh;
-        APS.parentTerrain = gameObject;
-        //APS.NewPath();
-
+      
 
        Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
      
-       for(int i=0; i<1;i++)//data.Count; i++)
+       for(int i=0; i<10;i++)//data.Count; i++)
        {
            List<double[]> temp = data[i];
+           GameObject pathMesh = new GameObject();
+           pathMesh.name = "Path " + i;
+           pathMesh.AddComponent(typeof(MeshFilter));
+           pathMesh.AddComponent(typeof(MeshRenderer));
+           pathMesh.AddComponent("AttachedPathScript");
+
+
+           AttachedPathScript APS = (AttachedPathScript)pathMesh.GetComponent("AttachedPathScript");
+           APS.pathMesh = pathMesh;
+           APS.parentTerrain = gameObject;
+           //APS.NewPath();
            APS.NewPath();
            APS.pathTexture = 1;
            APS.isRoad = true;
@@ -46,19 +46,21 @@ public class Street : MonoBehaviour {
            for(int j=0; j<temp.Count;j++)
            {
                Vector3 temp1;
-               //the y is taken calculating the height of the terrain in that point
-               temp1 = new Vector3((float)temp[j][0] * 10000000,Terrain.activeTerrain.SampleHeight(new Vector3((float)temp[j][0],(float)temp[j][1])), (float)temp[j][1] * 10000000);
-              //temp1.x *= Terrain.activeTerrain.terrainData.size.x;
+               //the y is taken calculating the height of the terrain in t hat point
+               //Debug.Log(Terrain.activeTerrain.terrainData.detailWidth + " " +Terrain.activeTerrain.terrainData.size.x);
+               //temp1 = new Vector3((float)temp[j][0] * 10000000 , Terrain.activeTerrain.SampleHeight(new Vector3((float)temp[j][0], (float)temp[j][1])), (float)temp[j][1]);
+               //Debug.Log(temp[j][0] * 1000000000000000);
+              //temp1.x *= 5;
                //temp1.z *= Terrain.activeTerrain.terrainData.size.z;
-               Debug.Log("size " + Terrain.activeTerrain.terrainData.size.x);
-               temp1.x %= Terrain.activeTerrain.terrainData.size.x;
-               temp1.z %= Terrain.activeTerrain.terrainData.size.z;
+               //Debug.Log("size " + Terrain.activeTerrain.terrainData.size.x);
+               //temp1.x %= Terrain.activeTerrain.terrainData.size.x;
+               //temp1.z %= Terrain.activeTerrain.terrainData.size.z;
                //Debug.Log(Terrain.activeTerrain.terrainData.size.z + "ciao" +temp1.z);
                TerrainPathCell pathNodeCell = new TerrainPathCell();
-               pathNodeCell.position.x = temp1.x;
-               pathNodeCell.position.y = temp1.z;
-               pathNodeCell.heightAtCell = temp1.y;
-
+               pathNodeCell.position.x = Mathf.RoundToInt((float)((((temp[j][0] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.x) / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
+               pathNodeCell.position.y = Mathf.RoundToInt((float)((((temp[j][1] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.z) / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution)); ;
+               pathNodeCell.heightAtCell = Terrain.activeTerrain.SampleHeight(new Vector3((float)temp[j][0], (float)temp[j][1]));
+               Debug.Log("path node " + pathNodeCell.position);
                APS.CreatePathNode(pathNodeCell);
                APS.addNodeMode = false;
 
