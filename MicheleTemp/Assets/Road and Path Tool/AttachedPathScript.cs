@@ -73,22 +73,7 @@ public class AttachedPathScript : MonoBehaviour
 			Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");	
 	}
 	
-    public void reset()
-    {
-        nodeObjects = new PathNodeObjects[0];
-        pathCollider = (MeshCollider)pathMesh.AddComponent(typeof(MeshCollider));
-
-        //terrainObj = parentTerrain;
-        //terComponent = (Terrain)terrainObj.GetComponent(typeof(Terrain));
-
-        if (terComponent == null)
-            Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");
-
-
-        terData = terComponent.terrainData;
-        terrainHeights = terData.GetHeights(0, 0, terData.heightmapResolution, terData.heightmapResolution);
-        terrainCollider = (TerrainCollider)terrainObj.GetComponent(typeof(TerrainCollider));
-    }
+   
 
 	public void NewPath()
 	{
