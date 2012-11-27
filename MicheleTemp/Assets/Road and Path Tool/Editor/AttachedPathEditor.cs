@@ -36,6 +36,7 @@ public class AttachedPathEditor : Editor
 				Vector3 pathNode = GetTerrainCollisionInEditor(currentEvent);
 				
 				TerrainPathCell pathNodeCell = new TerrainPathCell();
+                Debug.Log(pathNode);
 				pathNodeCell.position.x = pathNode.x;
 				pathNodeCell.position.y = pathNode.z;
 				pathNodeCell.heightAtCell = pathNode.y;

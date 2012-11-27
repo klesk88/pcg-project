@@ -73,6 +73,23 @@ public class AttachedPathScript : MonoBehaviour
 			Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");	
 	}
 	
+    public void reset()
+    {
+        nodeObjects = new PathNodeObjects[0];
+        pathCollider = (MeshCollider)pathMesh.AddComponent(typeof(MeshCollider));
+
+        //terrainObj = parentTerrain;
+        //terComponent = (Terrain)terrainObj.GetComponent(typeof(Terrain));
+
+        if (terComponent == null)
+            Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");
+
+
+        terData = terComponent.terrainData;
+        terrainHeights = terData.GetHeights(0, 0, terData.heightmapResolution, terData.heightmapResolution);
+        terrainCollider = (TerrainCollider)terrainObj.GetComponent(typeof(TerrainCollider));
+    }
+
 	public void NewPath()
 	{
 		nodeObjects = new PathNodeObjects[0];
@@ -84,7 +101,7 @@ public class AttachedPathScript : MonoBehaviour
 		if(terComponent == null)
 			Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");
 
-        Debug.Log("terrain elements " + terComponent.terrainData.size);
+    
 		terData = terComponent.terrainData;
 		terrainHeights = terData.GetHeights(0, 0, terData.heightmapResolution, terData.heightmapResolution);
 		terrainCollider = (TerrainCollider)terrainObj.GetComponent(typeof(TerrainCollider));
@@ -92,8 +109,11 @@ public class AttachedPathScript : MonoBehaviour
 	
 	public void CreatePathNode(TerrainPathCell nodeCell)
 	{
+        //Debug.Log(nodeCell.position.x);
 		Vector3 pathPosition = new Vector3((nodeCell.position.x/terData.heightmapResolution) * terData.size.x, nodeCell.heightAtCell * terData.size.y , (nodeCell.position.y/terData.heightmapResolution) * terData.size.z);
-		
+
+        //Debug.Log(pathPosition + "widht " + pathWidth);
+
 		AddNode(pathPosition, pathWidth);
 		
 		if(pathFlat || isRoad)
@@ -148,11 +168,11 @@ public class AttachedPathScript : MonoBehaviour
 		
 		if(meshFilter == null)
 			return;
-		
+        //Debug.Log("terrain elements " + terComponent.terrainData.size);
 		Mesh newMesh = meshFilter.sharedMesh;
-        Debug.Log(terData.heightmapResolution);
+        //Debug.Log(" fgf " + terData.heightmapResolution);
 		terrainHeights = terData.GetHeights(0, 0, terData.heightmapResolution, terData.heightmapResolution);
-        Debug.Log(terrainHeights.Length);
+        //Debug.Log(terrainHeights.Length);
 		pathCells = new ArrayList();
 	 
 		if (newMesh == null) 
@@ -292,26 +312,26 @@ public class AttachedPathScript : MonoBehaviour
 				extrudedPointR *= _widthAtNode;
 				
 				// Height at the terrain
-                Debug.Log(" " + terrainHeights[1999,1999]);
-				tweenPoint.y = terrainHeights[(int)(((float)(tweenPoint.z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)(tweenPoint.x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
-
+               //Debug.Log("asdasd " + tweenPoint.z + "werewr " + parentTerrain.transform.position.z);
+				tweenPoint.y = terrainHeights[(int)(((float)((tweenPoint.z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((tweenPoint.x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                //Debug.Log(tweenPoint.y);
 				// create vertices at the perpendicular points
 				newVertices[nextVertex] = tweenPoint + extrudedPointR;
                 if (!road)
                 {
                     //Debug.Log(parentTerrain.transform.position.z + "ciao" +newVertices[nextVertex].z);
-                    newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)(newVertices[nextVertex].z - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[nextVertex].x - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
+                    newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
                 }
                 else
-                    newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)(newVertices[nextVertex].z - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[nextVertex].x - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                    newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
 				nodeObjectVerts[nextVertex] = newVertices[nextVertex];
 				nextVertex++;
 				
 				newVertices[nextVertex] = tweenPoint + extrudedPointL;
 				if(!road)
-					newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)(newVertices[nextVertex].z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[nextVertex].x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex-2].y)/2f;
+					newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex-2].y)/2f;
 				else
-					newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)(newVertices[nextVertex].z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[nextVertex].x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+					newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
 				nodeObjectVerts[nextVertex] = newVertices[nextVertex];
 				nextVertex++;
 
@@ -379,9 +399,10 @@ public class AttachedPathScript : MonoBehaviour
 		extrudedPointR *= nodeObjects[0].width;
 		
 		newVertices[0] = nodeObjects[0].position + extrudedPointR;
-		newVertices[0].y = terrainHeights[(int)(((float)(newVertices[0].z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[0].x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+        //Debug.Log(newVertices[0].z);
+		newVertices[0].y = terrainHeights[(int)(((float)((newVertices[0].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[0].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
 		newVertices[1] = nodeObjects[0].position + extrudedPointL;
-		newVertices[1].y = terrainHeights[(int)(((float)(newVertices[1].z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)(newVertices[1].x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+		newVertices[1].y = terrainHeights[(int)(((float)((newVertices[1].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[1].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
 		
 		if(road)
 		{
@@ -765,7 +786,7 @@ public class AttachedPathScript : MonoBehaviour
 			terData.SetAlphamaps(0, 0, alphamap);
 			
 			isFinalized = true;
-			Debug.Log("Now that you have finalized your road, it is advised that you delete the 'Attached Path Script' component of this game object to avoid corrupting it in the future");
+			//Debug.Log("Now that you have finalized your road, it is advised that you delete the 'Attached Path Script' component of this game object to avoid corrupting it in the future");
 			return true;
 		}
 		

@@ -37,10 +37,10 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>F:/Programmer/Unity3.5/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>F:/Programmer/Unity3.5/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -49,14 +49,10 @@
      <Compile Include="Assets\Node.cs" />
      <Compile Include="Assets\PathFinder.cs" />
      <Compile Include="Assets\PivotManager.cs" />
-     <Compile Include="Assets\Road and Path Tool\AttachedPathScript.cs" />
-     <Compile Include="Assets\Road and Path Tool\PathScript.cs" />
      <Compile Include="Assets\State.cs" />
      <Compile Include="Assets\StateOld.cs" />
      <Compile Include="Assets\Visualizer.cs" />
      <Compile Include="Assets\VisualizerOld.cs" />
-     <None Include="Assets\Road and Path Tool\tutorial.txt" />
-     <None Include="Assets\Road and Path Tool\Shader\Diffuse_RoadOffset.shader" />
  <Reference Include="XMLParserUnity">
  <HintPath>Assets\Plugins\XMLParserUnity.dll</HintPath>
  </Reference>
