@@ -34,7 +34,7 @@ public class AttachedPathEditor : Editor
 			if(currentEvent.isKey && currentEvent.character == 'p')
 			{
 				Vector3 pathNode = GetTerrainCollisionInEditor(currentEvent);
-				
+                Debug.Log(currentEvent);
 				TerrainPathCell pathNodeCell = new TerrainPathCell();
                 Debug.Log(pathNode);
 				pathNodeCell.position.x = pathNode.x;
@@ -307,7 +307,7 @@ public class AttachedPathEditor : Editor
 			if(terCollider.Raycast(terrainRay, out raycastHit, Mathf.Infinity))
 			{
 				returnCollision = raycastHit.point;
-				
+                Debug.Log("collision x " + returnCollision.x + "collision y " + returnCollision.y);
 				returnCollision.x = Mathf.RoundToInt((returnCollision.x/terData.size.x) * terData.heightmapResolution);
 				returnCollision.y = returnCollision.y/terData.size.y;
 				returnCollision.z = Mathf.RoundToInt((returnCollision.z/terData.size.z) * terData.heightmapResolution);
