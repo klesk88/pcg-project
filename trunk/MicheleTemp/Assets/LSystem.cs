@@ -115,7 +115,7 @@ public class LSystem : MonoBehaviour {
             }
         }
         if(offset != null) {
-            gameObject.transform.Translate(-offset);
+            gameObject.transform.Translate(offset);
         }
     }
 

@@ -35,7 +35,7 @@ public class Street : MonoBehaviour {
            }
        }
 
-       for(int i=6; i<10;i++)//data.Count; i++)
+       for(int i=0; i<100 ; i++)//data.Count; i++)
        {
     
            List<double[]> temp = data[i];
@@ -70,8 +70,8 @@ public class Street : MonoBehaviour {
                //temp1.z %= Terrain.activeTerrain.terrainData.size.z;
                //Debug.Log(Terrain.activeTerrain.terrainData.size.z + "ciao" +temp1.z);
                TerrainPathCell pathNodeCell = new TerrainPathCell();
-               pathNodeCell.position.x = Mathf.RoundToInt((float)((((temp[j][0] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.x) / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
-               pathNodeCell.position.y = Mathf.RoundToInt((float)((((temp[j][1] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.z) / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution)); ;
+               pathNodeCell.position.x = Mathf.RoundToInt((float)((((temp[j][0] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.x) / Terrain.activeTerrain.terrainData.size.x) * (Terrain.activeTerrain.terrainData.heightmapResolution-1)));
+               pathNodeCell.position.y = Mathf.RoundToInt((float)((((temp[j][1] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.z) / Terrain.activeTerrain.terrainData.size.z) * (Terrain.activeTerrain.terrainData.heightmapResolution-1))); ;
       
                pathNodeCell.heightAtCell = (Terrain.activeTerrain.SampleHeight(new Vector3(pathNodeCell.position.x, pathNodeCell.position.y))) / Terrain.activeTerrain.terrainData.size.y;
                //Debug.Log(pathNodeCell.heightAtCell);

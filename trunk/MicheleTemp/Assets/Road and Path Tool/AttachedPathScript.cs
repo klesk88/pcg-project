@@ -96,7 +96,7 @@ public class AttachedPathScript : MonoBehaviour
 	{
         //Debug.Log(nodeCell.position.x);
 		Vector3 pathPosition = new Vector3((nodeCell.position.x/terData.heightmapResolution) * terData.size.x, nodeCell.heightAtCell * terData.size.y , (nodeCell.position.y/terData.heightmapResolution) * terData.size.z);
-
+        //sDebug.Log(pathPosition);
         //Debug.Log(pathPosition + "widht " + pathWidth);
 
 		AddNode(pathPosition, pathWidth);
@@ -204,174 +204,168 @@ public class AttachedPathScript : MonoBehaviour
 			cubicX[i] = nodeObjects[i].position.x;
 			cubicZ[i] = nodeObjects[i].position.z;
 		}
-		
-		for (int i = 0; i < n; i++) 
-		{
-			g1 = new Vector3[smoothingLevel+1];
-			g2 = new Vector3[smoothingLevel+1];
-			g3 = new Vector3[smoothingLevel+1];
-			
-			extrudedPointL = new Vector3();
-			extrudedPointR = new Vector3();
-			
-			if (i == 0)
-			{
-				newVertices[nextVertex] = nodeObjects[0].position;
-				nextVertex++;
-				uvs[0] = new Vector2(0f, 1f);
-				nextUV++;
-				newVertices[nextVertex] = nodeObjects[0].position;
-				nextVertex++;
-				uvs[1] = new Vector2(1f, 1f);
-				nextUV++;
-				
-				continue;
-			}
-			
-			float _widthAtNode = pathWidth;		
-			
-			// Interpolate points along the path using splines for direction and bezier curves for heights
-			for (int j = 0; j < smoothingLevel + 1; j++) 
-			{
-				// clone the vertex for uvs
-				if(i == 1)
-				{
-					if(j != 0)
-					{
-						newVertices[nextVertex] = newVertices[nextVertex-2];
-						nextVertex++;
-						
-						newVertices[nextVertex] = newVertices[nextVertex-2];
-						nextVertex++;
-						
-						uvs[nextUV] = new Vector2(0f, 1f);
-						nextUV++;
-						uvs[nextUV] = new Vector2(1f, 1f);
-						nextUV++;
-					}
-					
-					else
-						oldG2 = nodeObjects[0].position;
-				}
-				
-				else
-				{
-					newVertices[nextVertex] = newVertices[nextVertex-2];
-					nextVertex++;
-					
-					newVertices[nextVertex] =newVertices[nextVertex-2];
-					nextVertex++;
-					
-					uvs[nextUV] = new Vector2(0f, 1f);
-					nextUV++;
-					uvs[nextUV] = new Vector2(1f, 1f);
-					nextUV++;
-				}
-				
-				float u = (float)j/(float)(smoothingLevel+1f);
-				
-				Cubic[] X = calcNaturalCubic(n-1, cubicX);
-				Cubic[] Z = calcNaturalCubic(n-1, cubicZ);
-				
-				Vector3 tweenPoint = new Vector3(X[i-1].eval(u), 0f, Z[i-1].eval(u));
-				
-				// Add the current tweenpoint as a path cell
-				TerrainPathCell tC = new TerrainPathCell();
-				tC.position.x = ((tweenPoint.x - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution;
-				tC.position.y = ((tweenPoint.z - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution;
-				tC.heightAtCell = (tweenPoint.y - parentTerrain.transform.position.y)/terData.size.y;
-				pathCells.Add(tC);
-				
-				// update tweened points
-				g2[j] = tweenPoint;
-				g1[j] = oldG2;
-				g3[j] = g2[j] - g1[j];
-				oldG2 = g2[j];
-				
-				// Create perpendicular points for vertices
-				extrudedPointL = new Vector3(-g3[j].z, 0, g3[j].x);
-				extrudedPointR = new Vector3(g3[j].z, 0, -g3[j].x);
-				extrudedPointL.Normalize();
-				extrudedPointR.Normalize();
-				extrudedPointL *= _widthAtNode;
-				extrudedPointR *= _widthAtNode;
-				
-				// Height at the terrain
-                //Debug.Log(nodeObjects.Length);
-                //Debug.Log(tweenPoint.x + " " + parentTerrain.transform.position.x);
-				tweenPoint.y = terrainHeights[(int)(((float)((tweenPoint.z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((tweenPoint.x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
-                //Debug.Log(tweenPoint.y);
-				// create vertices at the perpendicular points
-				newVertices[nextVertex] = tweenPoint + extrudedPointR;
-                //Debug.Log("tween point " + tweenPoint + "extruded points " + extrudedPointR);
-                if (!road)
-                {
-                    //Debug.Log(parentTerrain.transform.position.x + "ciao" +newVertices[nextVertex].x);
-                    newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
+        try {
+            for (int i = 0; i < n; i++) {
+                g1 = new Vector3[smoothingLevel + 1];
+                g2 = new Vector3[smoothingLevel + 1];
+                g3 = new Vector3[smoothingLevel + 1];
+
+                extrudedPointL = new Vector3();
+                extrudedPointR = new Vector3();
+
+                if (i == 0) {
+                    newVertices[nextVertex] = nodeObjects[0].position;
+                    nextVertex++;
+                    uvs[0] = new Vector2(0f, 1f);
+                    nextUV++;
+                    newVertices[nextVertex] = nodeObjects[0].position;
+                    nextVertex++;
+                    uvs[1] = new Vector2(1f, 1f);
+                    nextUV++;
+
+                    continue;
                 }
-                else
-                    newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
-				nodeObjectVerts[nextVertex] = newVertices[nextVertex];
-				nextVertex++;
-				
-				newVertices[nextVertex] = tweenPoint + extrudedPointL;
-				if(!road)
-					newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex-2].y)/2f;
-				else
-					newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
-				nodeObjectVerts[nextVertex] = newVertices[nextVertex];
-				nextVertex++;
 
-				uvs[nextUV] = new Vector2(0f, 0f);
-				nextUV++;
-				uvs[nextUV] = new Vector2(1f, 0f);
-				nextUV++;
-				
-				// used later to update the handles
-				if(i == 1)
-					if(j == 0)
-						handle1Tween = tweenPoint;
+                float _widthAtNode = pathWidth;
 
-				// flatten mesh
-				if(flatten && !road)
-				{
-					if(newVertices[nextVertex-1].y < (newVertices[nextVertex-2].y-0.0f))
-					{
-						extrudedPointL *= 1.5f;
-						extrudedPointR *= 1.2f;
-						newVertices[nextVertex-1] = tweenPoint + extrudedPointL;
-						newVertices[nextVertex-2] = tweenPoint + extrudedPointR;
-						
-						newVertices[nextVertex-1].y = newVertices[nextVertex-2].y;
-					}
-				
-					else if(newVertices[nextVertex-1].y > (newVertices[nextVertex-2].y-0.0f))
-					{
-						extrudedPointR *= 1.5f;
-						extrudedPointL *= 1.2f;
-						newVertices[nextVertex-2] = tweenPoint + extrudedPointR;
-						newVertices[nextVertex-1] = tweenPoint + extrudedPointL;
-						
-						newVertices[nextVertex-2].y = newVertices[nextVertex-1].y;		
-					}
-				}
+                // Interpolate points along the path using splines for direction and bezier curves for heights
+                for (int j = 0; j < smoothingLevel + 1; j++) {
+                    // clone the vertex for uvs
+                    if (i == 1) {
+                        if (j != 0) {
+                            newVertices[nextVertex] = newVertices[nextVertex - 2];
+                            nextVertex++;
 
-				// Create triangles...
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j); // 0
-				nextTriangle++;
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 1; // 1
-				nextTriangle++;
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 2; // 2
-				nextTriangle++;
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 1; // 1
-				nextTriangle++;
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 3; // 3
-				nextTriangle++;
-				newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 2; // 2
-				nextTriangle++;
-			}
-		}
-		
+                            newVertices[nextVertex] = newVertices[nextVertex - 2];
+                            nextVertex++;
+
+                            uvs[nextUV] = new Vector2(0f, 1f);
+                            nextUV++;
+                            uvs[nextUV] = new Vector2(1f, 1f);
+                            nextUV++;
+                        }
+
+                        else
+                            oldG2 = nodeObjects[0].position;
+                    }
+
+                    else {
+                        newVertices[nextVertex] = newVertices[nextVertex - 2];
+                        nextVertex++;
+
+                        newVertices[nextVertex] = newVertices[nextVertex - 2];
+                        nextVertex++;
+
+                        uvs[nextUV] = new Vector2(0f, 1f);
+                        nextUV++;
+                        uvs[nextUV] = new Vector2(1f, 1f);
+                        nextUV++;
+                    }
+
+                    float u = (float)j / (float)(smoothingLevel + 1f);
+
+                    Cubic[] X = calcNaturalCubic(n - 1, cubicX);
+                    Cubic[] Z = calcNaturalCubic(n - 1, cubicZ);
+
+                    Vector3 tweenPoint = new Vector3(X[i - 1].eval(u), 0f, Z[i - 1].eval(u));
+
+                    // Add the current tweenpoint as a path cell
+                    TerrainPathCell tC = new TerrainPathCell();
+                    tC.position.x = ((tweenPoint.x - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution;
+                    tC.position.y = ((tweenPoint.z - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution;
+                    tC.heightAtCell = (tweenPoint.y - parentTerrain.transform.position.y) / terData.size.y;
+                    pathCells.Add(tC);
+
+                    // update tweened points
+                    g2[j] = tweenPoint;
+                    g1[j] = oldG2;
+                    g3[j] = g2[j] - g1[j];
+                    oldG2 = g2[j];
+
+                    // Create perpendicular points for vertices
+                    extrudedPointL = new Vector3(-g3[j].z, 0, g3[j].x);
+                    extrudedPointR = new Vector3(g3[j].z, 0, -g3[j].x);
+                    extrudedPointL.Normalize();
+                    extrudedPointR.Normalize();
+                    extrudedPointL *= _widthAtNode;
+                    extrudedPointR *= _widthAtNode;
+
+                    // Height at the terrain
+                    //Debug.Log(nodeObjects.Length);
+                    //Debug.Log(tweenPoint.x + " " + parentTerrain.transform.position.x);
+                    //Debug.Log((int)(((float)((tweenPoint.z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution) + ", " + (int)(((float)((tweenPoint.x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution));
+                    tweenPoint.y = terrainHeights[(int)(((float)((tweenPoint.z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((tweenPoint.x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                    //Debug.Log(tweenPoint.y);
+                    // create vertices at the perpendicular points
+                    newVertices[nextVertex] = tweenPoint + extrudedPointR;
+                    //Debug.Log("tween point " + tweenPoint + "extruded points " + extrudedPointR);
+                    if (!road) {
+                        //Debug.Log(parentTerrain.transform.position.x + "ciao" +newVertices[nextVertex].x);
+                        newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
+                    }
+                    else
+                        newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                    nodeObjectVerts[nextVertex] = newVertices[nextVertex];
+                    nextVertex++;
+
+                    newVertices[nextVertex] = tweenPoint + extrudedPointL;
+                    if (!road)
+                        newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
+                    else
+                        newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                    nodeObjectVerts[nextVertex] = newVertices[nextVertex];
+                    nextVertex++;
+
+                    uvs[nextUV] = new Vector2(0f, 0f);
+                    nextUV++;
+                    uvs[nextUV] = new Vector2(1f, 0f);
+                    nextUV++;
+
+                    // used later to update the handles
+                    if (i == 1)
+                        if (j == 0)
+                            handle1Tween = tweenPoint;
+
+                    // flatten mesh
+                    if (flatten && !road) {
+                        if (newVertices[nextVertex - 1].y < (newVertices[nextVertex - 2].y - 0.0f)) {
+                            extrudedPointL *= 1.5f;
+                            extrudedPointR *= 1.2f;
+                            newVertices[nextVertex - 1] = tweenPoint + extrudedPointL;
+                            newVertices[nextVertex - 2] = tweenPoint + extrudedPointR;
+
+                            newVertices[nextVertex - 1].y = newVertices[nextVertex - 2].y;
+                        }
+
+                        else if (newVertices[nextVertex - 1].y > (newVertices[nextVertex - 2].y - 0.0f)) {
+                            extrudedPointR *= 1.5f;
+                            extrudedPointL *= 1.2f;
+                            newVertices[nextVertex - 2] = tweenPoint + extrudedPointR;
+                            newVertices[nextVertex - 1] = tweenPoint + extrudedPointL;
+
+                            newVertices[nextVertex - 2].y = newVertices[nextVertex - 1].y;
+                        }
+                    }
+
+                    // Create triangles...
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j); // 0
+                    nextTriangle++;
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 1; // 1
+                    nextTriangle++;
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 2; // 2
+                    nextTriangle++;
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 1; // 1
+                    nextTriangle++;
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 3; // 3
+                    nextTriangle++;
+                    newTriangles[nextTriangle] = (verticesPerNode * (i - 1)) + (4 * j) + 2; // 2
+                    nextTriangle++;
+                }
+            }
+        }
+        catch (Exception e) {
+            return;
+        }
 		// update handles
 		g2[0] = handle1Tween;
 		g1[0] = nodeObjects[0].position;

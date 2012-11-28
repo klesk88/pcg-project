@@ -10,3 +10,15 @@ C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Deb
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\bin\Debug\Main.application
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.exe.manifest
 C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86\Debug\Main.application
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\Main.exe.config
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Debug\Main.exe
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Debug\Main.pdb
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\Main.exe.manifest
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\Main.application
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\Main.exe
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\Main.pdb
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\XMLParserUnity.dll
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Debug\XMLParserUnity.pdb
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Debug\Main.csprojResolveAssemblyReference.cache
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Debug\Main.exe.manifest
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Debug\Main.application
