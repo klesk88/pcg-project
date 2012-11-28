@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Street : MonoBehaviour {
 
     List<List<double[]>> data;
-
+    public Texture texture;
 	// Use this for initialization
 	void Start () {
 
@@ -35,15 +35,16 @@ public class Street : MonoBehaviour {
            }
        }
 
-       for(int i=0; i<10;i++)//data.Count; i++)
+       for(int i=6; i<10;i++)//data.Count; i++)
        {
+    
            List<double[]> temp = data[i];
            GameObject pathMesh = new GameObject();
            pathMesh.name = "Path " + i;
            pathMesh.AddComponent(typeof(MeshFilter));
            pathMesh.AddComponent(typeof(MeshRenderer));
            pathMesh.AddComponent("AttachedPathScript");
-
+           
 
            AttachedPathScript APS = (AttachedPathScript)pathMesh.GetComponent("AttachedPathScript");
            APS.pathMesh = pathMesh;
@@ -53,9 +54,8 @@ public class Street : MonoBehaviour {
            APS.pathTexture = 1;
            APS.isRoad = true;
            APS.pathSmooth = 60;
-           //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-           //cube.AddComponent<Rigidbody>();
-           //cube.transform.position = new Vector3(, y, 0);ù
+           APS.pathUniform = true;
+          
            for(int j=0; j<temp.Count;j++)
            {
                //Vector3 temp1;
@@ -72,7 +72,9 @@ public class Street : MonoBehaviour {
                TerrainPathCell pathNodeCell = new TerrainPathCell();
                pathNodeCell.position.x = Mathf.RoundToInt((float)((((temp[j][0] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.x) / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
                pathNodeCell.position.y = Mathf.RoundToInt((float)((((temp[j][1] * 1000000000000000) % Terrain.activeTerrain.terrainData.size.z) / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution)); ;
-               pathNodeCell.heightAtCell = Terrain.activeTerrain.SampleHeight(new Vector3(pathNodeCell.position.x, pathNodeCell.position.y));
+      
+               pathNodeCell.heightAtCell = (Terrain.activeTerrain.SampleHeight(new Vector3(pathNodeCell.position.x, pathNodeCell.position.y))) / Terrain.activeTerrain.terrainData.size.y;
+               //Debug.Log(pathNodeCell.heightAtCell);
                //Debug.Log("path node " + pathNodeCell.position);
                APS.CreatePathNode(pathNodeCell);
               
@@ -101,7 +103,12 @@ public class Street : MonoBehaviour {
          
            //APS.CreatePath(APS.pathSmooth, true, false);
            APS.pathMesh.renderer.enabled = true;
+           APS.pathMesh.renderer.material.color = Color.grey;
            APS.FinalizePath();
+ 
+   
+          // APS.pathMesh.renderer.material.mainTexture = (Texture)Resources.Load("Grass (Hill)");
+          // APS.pathMesh.renderer.sharedMaterial.mainTexture = texture;
        }
 	}
 

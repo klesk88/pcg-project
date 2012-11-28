@@ -297,14 +297,16 @@ public class AttachedPathScript : MonoBehaviour
 				extrudedPointR *= _widthAtNode;
 				
 				// Height at the terrain
-               //Debug.Log("asdasd " + tweenPoint.z + "werewr " + parentTerrain.transform.position.z);
+                //Debug.Log(nodeObjects.Length);
+                //Debug.Log(tweenPoint.x + " " + parentTerrain.transform.position.x);
 				tweenPoint.y = terrainHeights[(int)(((float)((tweenPoint.z) - parentTerrain.transform.position.z)/terData.size.z) * terData.heightmapResolution), (int)(((float)((tweenPoint.x) - parentTerrain.transform.position.x)/terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
                 //Debug.Log(tweenPoint.y);
 				// create vertices at the perpendicular points
 				newVertices[nextVertex] = tweenPoint + extrudedPointR;
+                //Debug.Log("tween point " + tweenPoint + "extruded points " + extrudedPointR);
                 if (!road)
                 {
-                    //Debug.Log(parentTerrain.transform.position.z + "ciao" +newVertices[nextVertex].z);
+                    //Debug.Log(parentTerrain.transform.position.x + "ciao" +newVertices[nextVertex].x);
                     newVertices[nextVertex].y = (((float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y) + newVertices[nextVertex - 2].y) / 2f;
                 }
                 else
