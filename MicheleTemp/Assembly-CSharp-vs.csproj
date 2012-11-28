@@ -37,15 +37,17 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>F:/Programmer/Unity3.5/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>F:/Programmer/Unity3.5/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Data.cs" />
      <Compile Include="Assets\LSystem.cs" />
+     <Compile Include="Assets\Node.cs" />
+     <Compile Include="Assets\PathFinder.cs" />
      <Compile Include="Assets\PivotManager.cs" />
      <Compile Include="Assets\Road and Path Tool\AttachedPathScript.cs" />
      <Compile Include="Assets\Road and Path Tool\PathScript.cs" />

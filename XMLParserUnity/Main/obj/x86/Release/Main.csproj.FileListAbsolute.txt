@@ -13,3 +13,6 @@ C:\Users\klesk\Documents\Visual Studio 2010\Projects\XMLParserUnity\Main\obj\x86
 D:\PCGProject\XMLParserUnity\Main\bin\Release\Main.exe.config
 D:\PCGProject\XMLParserUnity\Main\obj\x86\Release\Main.exe
 D:\PCGProject\XMLParserUnity\Main\obj\x86\Release\Main.pdb
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\bin\Release\Main.exe.config
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Release\Main.exe
+F:\Dokumenter\Dropbox\PCG_SVN\XMLParserUnity\Main\obj\x86\Release\Main.pdb

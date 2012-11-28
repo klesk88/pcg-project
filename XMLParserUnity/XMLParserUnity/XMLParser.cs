@@ -15,7 +15,7 @@ namespace XMLParserUnity
         //hash tables use for store the data and retrive them in a fast way
         private Dictionary<int, DataForElements> element_to_nodes = new Dictionary<int, DataForElements>();
         private Dictionary<int, DataStructure> nodes_data = new Dictionary<int, DataStructure>();
-
+        private double max_lon_b = Double.MinValue, min_lon_b = Double.MaxValue, max_lat_b = Double.MinValue, min_lat_b = Double.MaxValue, max_lon_s = Double.MinValue, min_lon_s = Double.MaxValue, max_lat_s = Double.MinValue, min_lat_s = Double.MaxValue;
         private class DataStructure
         {
              public string attribute = null;
@@ -123,7 +123,7 @@ namespace XMLParserUnity
                                 temp = node.GetAttribute("maxlon").Replace('.', ',');
                                 Double.TryParse(temp, out maxlon);
 
-                               
+                                
                                 break;
                         }
 
@@ -164,14 +164,14 @@ namespace XMLParserUnity
                                 throw new ArgumentException("The node can not be parsed " + node.GetAttribute("id"));
                             }
 
-                            normalization(ref lat, maxlat,minlat,0,1);
+                            //normalization(ref lat, maxlat,minlat,0,1);
                             temp = node.GetAttribute("lon").Replace('.', ',');
                             if (!Double.TryParse(temp, out lon))
                             {
                                 throw new ArgumentException("The node can not be parsed " + node.GetAttribute("id"));
                             }
 
-                            normalization(ref lon, maxlon, minlon, 0, 1);
+                            //normalization(ref lon, maxlon, minlon, 0, 1);
                             //height value
                             if (node.GetAttribute("height") != null)
                             {
@@ -183,9 +183,8 @@ namespace XMLParserUnity
                                 height = 0;
                             }
 
-                           
-                           
-                            
+
+                         
                             /*
                              * check if there is a tag section. Because with XmlReader when we use readInnerXML() for check the tags
                              * skip to the next line i have to put the code here and can't perform the check before
@@ -234,6 +233,48 @@ namespace XMLParserUnity
                             if(checkValidTag(node, ref attribute, ref value))
                             {
                                 DataForElements data = new DataForElements(attribute,list_of_nodes);
+
+                                if (attribute == "highway") {
+                                    foreach (int element in list_of_nodes) {
+                                        if (max_lat_s < nodes_data[element].lat) {
+                                            max_lat_s = nodes_data[element].lat;
+                                        }
+
+                                        if (min_lat_s > nodes_data[element].lat) {
+                                            min_lat_s = nodes_data[element].lat;
+                                        }
+
+                                        if (max_lon_s < nodes_data[element].lon) {
+                                            max_lon_s = nodes_data[element].lon;
+                                        }
+
+                                        if (min_lon_s > nodes_data[element].lon) {
+                                            min_lon_s = nodes_data[element].lon;
+                                        }
+                                    }
+                                }
+
+                                if (attribute == "building") {
+                                    foreach (int element in list_of_nodes) {
+                                        if (max_lat_b < nodes_data[element].lat) {
+                                            max_lat_b = nodes_data[element].lat;
+                                        }
+
+                                        if (min_lat_b > nodes_data[element].lat) {
+                                            min_lat_b = nodes_data[element].lat;
+                                        }
+
+                                        if (max_lon_b < nodes_data[element].lon) {
+                                            max_lon_b = nodes_data[element].lon;
+                                        }
+
+                                        if (min_lon_b > nodes_data[element].lon) {
+                                            min_lon_b = nodes_data[element].lon;
+                                        }
+                                    }
+                                }
+
+
                                 if (!element_to_nodes.ContainsKey(id))
                                 {
                                     element_to_nodes.Add(id, data);
@@ -261,9 +302,10 @@ namespace XMLParserUnity
 
 
         //normalize the data
-        private void normalization(ref double number, double max, double min,int min_range, int max_range)
+        private double normalization(double number, double max, double min,int min_range, int max_range)
         {
             number = ((number - min) / (max - min)) * (max_range - min_range) + min_range;
+            return number;
         }
 
         ///<summary>
@@ -558,6 +600,10 @@ namespace XMLParserUnity
             {
                 w.WriteLine("id:" + key);
 
+                if (file_name == "Building.txt") {
+                    int break1;
+                    break1 = 1;
+                }
                 //for each node componing this element
                 foreach (int elm in list_of_nodes.nodes)
                 {
@@ -572,7 +618,10 @@ namespace XMLParserUnity
                     {
                         //write the data in the file
                         DataStructure data = nodes_data[elm];
-                        w.WriteLine("sub_node:" + elm + " longitude:" + data.lon + " latitude:" + data.lat + " height:" + data.height);
+                        if(file_name == "Building.txt")
+                            w.WriteLine("sub_node:" + elm + " longitude:" + normalization(data.lon, max_lon_b, min_lon_b, 0, 1) + " latitude:" + normalization(data.lat, max_lat_b, min_lat_b, 0, 1) + " height:" + data.height);
+                        else if(file_name == "Highway.txt")
+                                w.WriteLine("sub_node:" + elm + " longitude:" + normalization(data.lon, max_lon_s, min_lon_s, 0, 1) + " latitude:" + normalization(data.lat, max_lat_s, min_lat_s, 0, 1) + " height:" + data.height);
                     }
 
                 }

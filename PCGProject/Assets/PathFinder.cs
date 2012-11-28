@@ -89,7 +89,7 @@ public class PathFinder : MonoBehaviour {
             i++;
         }
         if (path.Count > 0)
-            Debug.Log("Path succesfully found!");
+            Debug.Log("Path succesfully found!" + "Path Distance: " + tentativeGScore*15 + " m (estimate)");
         else {
             Debug.Log("It was not possible to find a path.");
             startNode.getGameObject().renderer.material.color = Color.grey;
