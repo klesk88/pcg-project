@@ -8,7 +8,7 @@ public class Node {
 
     public Node(Vector3 _position, Vector3[] _neighbours, GameObject _gameObject = null) {
         position = _position;
-        if (_gameObject != null) {
+        /*if (_gameObject != null) {
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Object.Destroy(cube.GetComponent<BoxCollider>());
             cube.transform.position = position;
@@ -18,7 +18,7 @@ public class Node {
             cube.transform.Rotate(new Vector3(0, -Mathf.Rad2Deg * Mathf.Atan(zxRelation), 0));
             gameObject = cube;
         }
-        else
+        else*/
             gameObject = _gameObject;
         
         neighbours = new ArrayList(); 
