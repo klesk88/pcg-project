@@ -162,7 +162,20 @@ public class Data : MonoBehaviour {
                 //Debug.Log("path node " + pathNodeCell.position);
                 APS.CreatePathNode(pathNodeCell);
 
-
+                // -- Pathfinding --
+                Vector3 pos = APS.nodeObjects[j].position;
+                Vector3[] neighbours;
+                if(j == 0)
+                    neighbours = new Vector3[0];
+                else {
+                    neighbours = new Vector3[1];
+                    neighbours[0] = APS.nodeObjects[j - 1].position;
+                    PathFinder.nodeMap[APS.nodeObjects[j - 1].position].addNeighbours(new Vector3[] { pos });
+                }
+                if(PathFinder.nodeMap.ContainsKey(pos))
+                    PathFinder.nodeMap[pos].addNeighbours(neighbours);
+                else
+                    PathFinder.nodeMap[pos] = new Node(pos, neighbours, pathMesh);
 
             }
             APS.addNodeMode = false;

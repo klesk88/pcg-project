@@ -17,6 +17,7 @@ public class PathFinder : MonoBehaviour {
     ArrayList open = new ArrayList();
     ArrayList closed = new ArrayList();
     ArrayList neighbours = new ArrayList();
+    ArrayList pathPoints = new ArrayList();
 
     public static Dictionary<Vector3, Node> nodeMap = new Dictionary<Vector3, Node>();
  	
@@ -53,6 +54,7 @@ public class PathFinder : MonoBehaviour {
         open.Clear();
         closed.Clear();
         neighbours.Clear();
+        clearPathPoints();
 
         float tentativeGScore = 0;
         gScore[startNode] = 0;
@@ -89,14 +91,15 @@ public class PathFinder : MonoBehaviour {
             i++;
         }
         if (path.Count > 0)
-            Debug.Log("Path succesfully found!" + "Path Distance: " + tentativeGScore*15 + " m (estimate)");
+            Debug.Log("Path succesfully found!" + "Path Distance: " + tentativeGScore + " m (estimate)");
         else {
             Debug.Log("It was not possible to find a path.");
             startNode.getGameObject().renderer.material.color = Color.grey;
             endNode.getGameObject().renderer.material.color = Color.grey;
         }
-        foreach (Node node in path)
-            node.getGameObject().renderer.material.color = Color.red;
+        //foreach (Node node in path)
+        //    node.getGameObject().renderer.material.color = Color.red;
+        visualizePath();
         waitForAStar = false;
         return path;
     }
@@ -124,5 +127,22 @@ public class PathFinder : MonoBehaviour {
             }
         }
         return (Node)nodeMap[closestNode];
+    }
+
+    public void visualizePath() {
+        foreach(Node node in path) {
+            GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            point.renderer.material.color = Color.blue;
+            point.transform.position = node.getPosition();
+            point.transform.localScale = new Vector3(5, 5, 5);
+            Destroy(point.GetComponent<SphereCollider>());
+            pathPoints.Add(point);
+        }
+    }
+
+    public void clearPathPoints() {
+        foreach(GameObject point in pathPoints)
+            Destroy(point);
+        pathPoints.Clear();
     }
 }
