@@ -92,7 +92,7 @@ public class AttachedPathScript : MonoBehaviour
 		terrainCollider = (TerrainCollider)terrainObj.GetComponent(typeof(TerrainCollider));
 	}
 	
-	public void CreatePathNode(TerrainPathCell nodeCell)
+	public bool CreatePathNode(TerrainPathCell nodeCell)
 	{
         //Debug.Log(nodeCell.position.x);
 		Vector3 pathPosition = new Vector3((nodeCell.position.x/terData.heightmapResolution) * terData.size.x, nodeCell.heightAtCell * terData.size.y , (nodeCell.position.y/terData.heightmapResolution) * terData.size.z);
@@ -102,10 +102,10 @@ public class AttachedPathScript : MonoBehaviour
 		AddNode(pathPosition, pathWidth);
 		
 		if(pathFlat || isRoad)
-			CreatePath(pathSmooth, true, false);
+			return CreatePath(pathSmooth, true, false);
 		
 		else
-			CreatePath(pathSmooth, false, false);
+			return CreatePath(pathSmooth, false, false);
 	}
 	
 	public void AddNode(Vector3 position, float width)
@@ -147,12 +147,12 @@ public class AttachedPathScript : MonoBehaviour
 		nodeObjects = newNodeObjects;
 	}
 	
-	public void CreatePath(int smoothingLevel, bool flatten, bool road)
+	public bool CreatePath(int smoothingLevel, bool flatten, bool road)
 	{
 		MeshFilter meshFilter = (MeshFilter)pathMesh.GetComponent(typeof(MeshFilter));
 		
 		if(meshFilter == null)
-			return;
+			return true;
         //Debug.Log("terrain elements " + terComponent.terrainData.size);
 		Mesh newMesh = meshFilter.sharedMesh;
         //Debug.Log(" fgf " + terData.heightmapResolution);
@@ -173,7 +173,7 @@ public class AttachedPathScript : MonoBehaviour
 		
 		if (nodeObjects == null || nodeObjects.Length < 2) 
 		{
-			return;
+			return true;
 		}
 		
 		int n = nodeObjects.Length;
@@ -305,6 +305,7 @@ public class AttachedPathScript : MonoBehaviour
                     }
                     else
                         newVertices[nextVertex].y = (float)terrainHeights[(int)(((float)((newVertices[nextVertex].z) - parentTerrain.transform.position.z) / terData.size.z) * terData.heightmapResolution), (int)(((float)((newVertices[nextVertex].x) - parentTerrain.transform.position.x) / terData.size.x) * terData.heightmapResolution)] * terData.size.y + parentTerrain.transform.position.y;
+                  
                     nodeObjectVerts[nextVertex] = newVertices[nextVertex];
                     nextVertex++;
 
@@ -364,7 +365,7 @@ public class AttachedPathScript : MonoBehaviour
             }
         }
         catch (Exception e) {
-            return;
+            return false;
         }
 		// update handles
 		g2[0] = handle1Tween;
@@ -419,6 +420,8 @@ public class AttachedPathScript : MonoBehaviour
 			pathMesh.renderer.enabled = true;
 		
 		transform.localScale = new Vector3(1,1,1);
+
+        return true;
 	}
 	
 	public bool FinalizePath()
