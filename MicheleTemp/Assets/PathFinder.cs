@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+//[ExecuteInEditMode()]
+
 public class PathFinder : MonoBehaviour {
     Ray ray = new Ray();
     RaycastHit hit;
@@ -19,6 +21,8 @@ public class PathFinder : MonoBehaviour {
     ArrayList neighbours = new ArrayList();
     ArrayList pathPoints = new ArrayList();
 
+    TerrainPathCell[] terrainCells;
+
     public static Dictionary<Vector3, Node> nodeMap = new Dictionary<Vector3, Node>();
  	
 	// Update is called once per frame
@@ -29,13 +33,13 @@ public class PathFinder : MonoBehaviour {
                 if (Physics.Raycast(ray, out hit)) {
                     if (!endSelect) {
                         startNode = nearestNode(hit.point);
-                        startNode.getGameObject().renderer.material.color = Color.green;
+                    //    startNode.getGameObject().renderer.material.color = Color.green;
                         Debug.Log("START NODE COORDINATES: " + startNode.getPosition());
                         endSelect = true;
                     }
                     else {
                         endNode = nearestNode(hit.point);
-                        endNode.getGameObject().renderer.material.color = Color.green;
+                    //    endNode.getGameObject().renderer.material.color = Color.green;
                         Debug.Log("GOAL NODE COORDINATES: " + endNode.getPosition());
                         waitForAStar = true;
                         ArrayList bestPath = FindPath();
@@ -126,23 +130,88 @@ public class PathFinder : MonoBehaviour {
                 closestNode = nodePos;
             }
         }
-        return (Node)nodeMap[closestNode];
+        Debug.Log(closestNode);
+        Debug.Log(nodeMap.Count);
+        return (Node)nodeMap[closestNode];  
     }
 
     public void visualizePath() {
+        GameObject pathMesh = new GameObject();
+        pathMesh.name = "Path ";
+        pathMesh.AddComponent(typeof(MeshFilter));
+        pathMesh.AddComponent(typeof(MeshRenderer));
+        pathMesh.AddComponent("AttachedPathScript");
+
+
+        AttachedPathScript APS = (AttachedPathScript)pathMesh.GetComponent("AttachedPathScript");
+        APS.pathMesh = pathMesh;
+        APS.parentTerrain = gameObject;
+        //APS.NewPath();
+        APS.NewPath();
+        APS.pathWidth = 3;
+        //APS.pathTexture = 1;
+        APS.isRoad = true;
+        APS.pathSmooth = 30;
+        //APS.pathUniform = true;
+        //APS.pathWear = 0.5f;
+        bool check = false;
         foreach(Node node in path) {
-            GameObject point = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            point.renderer.material.color = Color.blue;
-            point.transform.position = node.getPosition();
-            point.transform.localScale = new Vector3(5, 5, 5);
-            Destroy(point.GetComponent<SphereCollider>());
-            pathPoints.Add(point);
+                TerrainPathCell pathNodeCell = new TerrainPathCell();
+                pathNodeCell.position.x = Mathf.RoundToInt((float)((node.getPosition().x / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
+                pathNodeCell.position.y = Mathf.RoundToInt((float)((node.getPosition().z / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution));
+
+                pathNodeCell.heightAtCell = (Terrain.activeTerrain.SampleHeight(new Vector3(pathNodeCell.position.x, pathNodeCell.position.y))) / Terrain.activeTerrain.terrainData.size.y;
+                //Debug.Log(pathNodeCell.heightAtCell);
+                //Debug.Log("path node " + pathNodeCell.position);
+
+                if (!APS.CreatePathNode(pathNodeCell)) {
+                    check = true;
+                    break;
+                }
+
+
+
+            
+
+            if (check) {
+                DestroyImmediate(pathMesh);
+                continue;
+            }
+
+
+            
+
+            
+
         }
+        APS.terrainCells = new TerrainPathCell[APS.terData.heightmapResolution * APS.terData.heightmapResolution];
+
+        //prova
+        APS.terrainCells = terrainCells;
+        APS.FinalizePath();
+            APS.pathMesh.renderer.enabled = true;
+            APS.pathMesh.renderer.material.color = Color.grey;
     }
+   
 
     public void clearPathPoints() {
         foreach(GameObject point in pathPoints)
             Destroy(point);
         pathPoints.Clear();
+    }
+
+    void Start(){
+        GetComponent<Data>().Run();
+        Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
+        terrainCells = new TerrainPathCell[terComponent.terrainData.heightmapResolution * terComponent.terrainData.heightmapResolution]; ;
+        float[,] terrainHeights = terComponent.terrainData.GetHeights(0, 0, terComponent.terrainData.heightmapResolution, terComponent.terrainData.heightmapResolution);
+        for (int x = 0; x < terComponent.terrainData.heightmapResolution; x++) {
+            for (int y = 0; y < terComponent.terrainData.heightmapResolution; y++) {
+                terrainCells[(y) + (x * terComponent.terrainData.heightmapResolution)].position.y = y;
+                terrainCells[(y) + (x * terComponent.terrainData.heightmapResolution)].position.x = x;
+                terrainCells[(y) + (x * terComponent.terrainData.heightmapResolution)].heightAtCell = terrainHeights[y, x];
+                terrainCells[(y) + (x * terComponent.terrainData.heightmapResolution)].isAdded = false;
+            }
+        }
     }
 }
