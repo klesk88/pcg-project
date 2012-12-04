@@ -23,9 +23,9 @@ public class Data : MonoBehaviour {
          parser.deleteAllFiles();
          parser.createFile(type_of_file);*/
         List<List<double[]>> data = new List<List<double[]>>();
-        Debug.Log("before: " + data.Count);
+       
         data = parser.read("Building.txt");
-        Debug.Log("after: " + data.Count);
+    
         //    Debug.Log(f);
         //LSystem lsystem = new LSystem();
         //foreach(float f in data[3][3])
@@ -38,6 +38,9 @@ public class Data : MonoBehaviour {
             Vector3[] vertices = new Vector3[data[i].Count - 1];
             GameObject building = new GameObject();
             building.name = "Building_" + i;
+            building.AddComponent("CollisionDetection");
+            //@Michele: add for reference in a simple way all the buildings in case of collision
+            building.tag = "Building";
             building.transform.parent = this.gameObject.transform;
             int j = 0;
             int height = 0;
@@ -63,10 +66,10 @@ public class Data : MonoBehaviour {
             for (j = 0; j < vertices.Length; j++)
                 vertices[j] -= offset;
             float randHeight = lsystem.randHeight();
-            building.AddComponent("BoxCollider");
+            building.AddComponent<BoxCollider>();
             building.GetComponent<BoxCollider>().center = new Vector3(0, randHeight / 2, 0);
             building.GetComponent<BoxCollider>().size = new Vector3(maxX - minX, randHeight, maxZ - minZ);
-
+            
             if (height == 0)
                 lsystem.visualize(building/*this.gameObject*/, vertices, offset, randHeight);
             //   else

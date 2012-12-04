@@ -138,6 +138,7 @@ public class PathFinder : MonoBehaviour {
     public void visualizePath() {
         GameObject pathMesh = new GameObject();
         pathMesh.name = "Path ";
+        pathMesh.tag = "Road";
         pathMesh.AddComponent(typeof(MeshFilter));
         pathMesh.AddComponent(typeof(MeshRenderer));
         pathMesh.AddComponent("AttachedPathScript");
@@ -189,8 +190,11 @@ public class PathFinder : MonoBehaviour {
         //prova
         APS.terrainCells = terrainCells;
         APS.FinalizePath();
-            APS.pathMesh.renderer.enabled = true;
-            APS.pathMesh.renderer.material.color = Color.grey;
+        APS.pathMesh.renderer.enabled = true;
+        APS.pathMesh.renderer.material.color = Color.grey;
+        pathMesh.GetComponent<MeshCollider>().convex = true;
+        pathMesh.AddComponent<Rigidbody>();
+        pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
    
 
