@@ -98,8 +98,8 @@ public class PathFinder : MonoBehaviour {
             Debug.Log("Path succesfully found!" + "Path Distance: " + tentativeGScore + " m (estimate)");
         else {
             Debug.Log("It was not possible to find a path.");
-            startNode.getGameObject().renderer.material.color = Color.grey;
-            endNode.getGameObject().renderer.material.color = Color.grey;
+           // startNode.getGameObject().renderer.material.color = Color.grey;
+           // endNode.getGameObject().renderer.material.color = Color.grey;
         }
         //foreach (Node node in path)
         //    node.getGameObject().renderer.material.color = Color.red;
@@ -137,7 +137,7 @@ public class PathFinder : MonoBehaviour {
 
     public void visualizePath() {
         GameObject pathMesh = new GameObject();
-        pathMesh.name = "Path ";
+        pathMesh.name = "Path";
         pathMesh.tag = "Road";
         pathMesh.AddComponent(typeof(MeshFilter));
         pathMesh.AddComponent(typeof(MeshRenderer));
@@ -186,17 +186,17 @@ public class PathFinder : MonoBehaviour {
 
         }
         APS.terrainCells = new TerrainPathCell[APS.terData.heightmapResolution * APS.terData.heightmapResolution];
-
-        //prova
         APS.terrainCells = terrainCells;
         APS.FinalizePath();
         APS.pathMesh.renderer.enabled = true;
         APS.pathMesh.renderer.material.color = Color.grey;
-        pathMesh.GetComponent<MeshCollider>().convex = true;
-        pathMesh.AddComponent<Rigidbody>();
+        //pathMesh.GetComponent<MeshCollider>().convex = true;
+        pathMesh.AddComponent<Rigidbody>().inertiaTensor = Vector3.zero;
+        pathMesh.GetComponent<Rigidbody>().useGravity = false;
         pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+        pathMesh.transform.Translate(new Vector3(0, 0.1f, 0));
+        pathMesh.AddComponent<CollisionMover>();
     }
-   
 
     public void clearPathPoints() {
         foreach(GameObject point in pathPoints)
