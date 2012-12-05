@@ -411,7 +411,7 @@ public class AttachedPathScript : MonoBehaviour
 
 //		newMesh.RecalculateNormals();
 		pathCollider.sharedMesh = meshFilter.sharedMesh;
-		pathCollider.smoothSphereCollisions = true;
+		//pathCollider.smoothSphereCollisions = true;
 		
 		// we don't want to see the mesh
 		if(!road)
