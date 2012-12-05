@@ -152,14 +152,17 @@ public class PathFinder : MonoBehaviour {
         APS.pathWidth = 3;
         //APS.pathTexture = 1;
         APS.isRoad = true;
-        APS.pathSmooth = 30;
+        APS.pathSmooth = 5;
         //APS.pathUniform = true;
         //APS.pathWear = 0.5f;
         bool check = false;
-        foreach(Node node in path) {
+//        foreach(Node node in path) {
+        for (int i = 0; i < path.Count; i++) {
+            if (i % 3 == 0) {
+
                 TerrainPathCell pathNodeCell = new TerrainPathCell();
-                pathNodeCell.position.x = Mathf.RoundToInt((float)((node.getPosition().x / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
-                pathNodeCell.position.y = Mathf.RoundToInt((float)((node.getPosition().z / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution));
+                pathNodeCell.position.x = Mathf.RoundToInt((float)((((Node)path[i]).getPosition().x / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
+                pathNodeCell.position.y = Mathf.RoundToInt((float)((((Node)path[i]).getPosition().z / Terrain.activeTerrain.terrainData.size.z) * Terrain.activeTerrain.terrainData.heightmapResolution));
 
                 pathNodeCell.heightAtCell = (Terrain.activeTerrain.SampleHeight(new Vector3(pathNodeCell.position.x, pathNodeCell.position.y))) / Terrain.activeTerrain.terrainData.size.y;
                 //Debug.Log(pathNodeCell.heightAtCell);
@@ -172,18 +175,19 @@ public class PathFinder : MonoBehaviour {
 
 
 
-            
-
-            if (check) {
-                DestroyImmediate(pathMesh);
-                continue;
-            }
 
 
-            
+                if (check) {
+                    DestroyImmediate(pathMesh);
+                    continue;
+                }
 
-            
 
+
+
+
+
+            } 
         }
         APS.terrainCells = new TerrainPathCell[APS.terData.heightmapResolution * APS.terData.heightmapResolution];
         APS.terrainCells = terrainCells;
@@ -191,11 +195,12 @@ public class PathFinder : MonoBehaviour {
         APS.pathMesh.renderer.enabled = true;
         APS.pathMesh.renderer.material.color = Color.grey;
         //pathMesh.GetComponent<MeshCollider>().convex = true;
-        pathMesh.AddComponent<Rigidbody>().inertiaTensor = Vector3.zero;
+        pathMesh.AddComponent<Rigidbody>()/*.inertiaTensor = Vector3.one*/;
         pathMesh.GetComponent<Rigidbody>().useGravity = false;
+        pathMesh.transform.Translate(new Vector3(0, 0.2f, 0));
         pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        pathMesh.transform.Translate(new Vector3(0, 0.1f, 0));
         pathMesh.AddComponent<CollisionMover>();
+       
     }
 
     public void clearPathPoints() {
