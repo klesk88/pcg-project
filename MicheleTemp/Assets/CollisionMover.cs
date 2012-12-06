@@ -12,8 +12,11 @@ public class CollisionMover : MonoBehaviour {
      */
 
     void OnCollisionStay(Collision collisionInfo) {
-        if(collisionInfo.gameObject.name.Contains("Building"))
-            collisionInfo.gameObject.transform.Translate(new Vector3(10, 0, 0));
+        if (collisionInfo.gameObject.name.Contains("Building")) {
+            Destroy(collisionInfo.gameObject);
+            //collisionInfo.gameObject.transform.Translate(new Vector3(10, 0, 0));
+            //collisionInfo.gameObject.AddComponent<BuildingDestroyer>();
+        }
     }
 
 }
