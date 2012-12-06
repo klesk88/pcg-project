@@ -38,9 +38,9 @@ public class Data : MonoBehaviour {
             Vector3[] vertices = new Vector3[data[i].Count - 1];
             GameObject building = new GameObject();
             building.name = "Building_" + i;
-            building.AddComponent("CollisionDetection");
+           // building.AddComponent("CollisionDetection");
             //@Michele: add for reference in a simple way all the buildings in case of collision
-            building.tag = "Building";
+            //building.tag = "Building";
             building.transform.parent = this.gameObject.transform;
             int j = 0;
             int height = 0;

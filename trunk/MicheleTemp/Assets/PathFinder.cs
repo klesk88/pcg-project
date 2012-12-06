@@ -10,6 +10,7 @@ public class PathFinder : MonoBehaviour {
     Node startNode, endNode;
     bool endSelect = false;
     bool waitForAStar = false;
+    public GameObject car = null, checkpoint = null;
 
     Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
     Dictionary<Node, float> gScore = new Dictionary<Node, float>();
@@ -28,7 +29,7 @@ public class PathFinder : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!waitForAStar) {
-            if (Input.GetMouseButtonUp(0)) {
+            if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit)) {
                     if (!endSelect) {
@@ -45,6 +46,21 @@ public class PathFinder : MonoBehaviour {
                         ArrayList bestPath = FindPath();
                         endSelect = false;
                     }
+                }
+            }
+            else if (car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit)) {
+                    Instantiate(car, hit.point + new Vector3(0,10,0), Quaternion.identity);
+                    car.gameObject.SetActiveRecursively(false);
+                    Debug.Log("Car placed on track!");
+                }
+            }
+            else if (checkpoint != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.D)) {
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out hit)) {
+                    Instantiate(checkpoint, hit.point, Quaternion.identity);
+                    Debug.Log("Checkpoint placed on track!");
                 }
             }
         }
@@ -138,7 +154,7 @@ public class PathFinder : MonoBehaviour {
     public void visualizePath() {
         GameObject pathMesh = new GameObject();
         pathMesh.name = "Path";
-        pathMesh.tag = "Road";
+        //pathMesh.tag = "Road";
         pathMesh.AddComponent(typeof(MeshFilter));
         pathMesh.AddComponent(typeof(MeshRenderer));
         pathMesh.AddComponent("AttachedPathScript");
@@ -158,7 +174,7 @@ public class PathFinder : MonoBehaviour {
         bool check = false;
 //        foreach(Node node in path) {
         for (int i = 0; i < path.Count; i++) {
-            if (i % 3 == 0) {
+            if (i % 3 == 0 || i == path.Count - 1) {
 
                 TerrainPathCell pathNodeCell = new TerrainPathCell();
                 pathNodeCell.position.x = Mathf.RoundToInt((float)((((Node)path[i]).getPosition().x / Terrain.activeTerrain.terrainData.size.x) * Terrain.activeTerrain.terrainData.heightmapResolution));
@@ -173,20 +189,10 @@ public class PathFinder : MonoBehaviour {
                     break;
                 }
 
-
-
-
-
                 if (check) {
                     DestroyImmediate(pathMesh);
                     continue;
                 }
-
-
-
-
-
-
             } 
         }
         APS.terrainCells = new TerrainPathCell[APS.terData.heightmapResolution * APS.terData.heightmapResolution];
@@ -223,4 +229,11 @@ public class PathFinder : MonoBehaviour {
             }
         }
     }
+
+    /*void setActiveRecursive(GameObject go, bool act)
+    {
+        go.active = act;
+        foreach(Transform ch in go.transform)
+            ch.gameObject.setActiveRecursive(ch.gameObject,act);
+    }*/
 }
