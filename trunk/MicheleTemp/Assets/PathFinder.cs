@@ -9,7 +9,7 @@ public class PathFinder : MonoBehaviour {
     RaycastHit hit;
     Node startNode, endNode;
     bool endSelect = false;
-    bool waitForAStar = false;
+    bool waitForAStar = false, carEnter = false;
     public GameObject car = null, checkpoint = null;
 
     Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
@@ -29,18 +29,18 @@ public class PathFinder : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!waitForAStar) {
-            if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
+            if(Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit)) {
-                    if (!endSelect) {
+                if(Physics.Raycast(ray, out hit)) {
+                    if(!endSelect) {
                         startNode = nearestNode(hit.point);
-                    //    startNode.getGameObject().renderer.material.color = Color.green;
+                        //    startNode.getGameObject().renderer.material.color = Color.green;
                         Debug.Log("START NODE COORDINATES: " + startNode.getPosition());
                         endSelect = true;
                     }
                     else {
                         endNode = nearestNode(hit.point);
-                    //    endNode.getGameObject().renderer.material.color = Color.green;
+                        //    endNode.getGameObject().renderer.material.color = Color.green;
                         Debug.Log("GOAL NODE COORDINATES: " + endNode.getPosition());
                         waitForAStar = true;
                         ArrayList bestPath = FindPath();
@@ -48,20 +48,25 @@ public class PathFinder : MonoBehaviour {
                     }
                 }
             }
-            else if (car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
+            else if(car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit)) {
-                    Instantiate(car, hit.point + new Vector3(0,10,0), Quaternion.identity);
-                    car.gameObject.SetActiveRecursively(false);
+                if(Physics.Raycast(ray, out hit)) {
+                    car = (GameObject)Instantiate(car, hit.point + new Vector3(0, 10, 0), Quaternion.identity);
+                    //car.gameObject.SetActiveRecursively(false);
                     Debug.Log("Car placed on track!");
+                    carEnter = true;
                 }
             }
-            else if (checkpoint != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.D)) {
+            else if(checkpoint != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.D)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit)) {
+                if(Physics.Raycast(ray, out hit)) {
                     Instantiate(checkpoint, hit.point, Quaternion.identity);
                     Debug.Log("Checkpoint placed on track!");
                 }
+            }
+            else if(carEnter && CheckpointMgr.latestCheckpoint != Vector3.zero && Input.GetKeyUp(KeyCode.T)) {
+                Debug.Log("Should load from checkpoint now!");
+                car.transform.position = CheckpointMgr.latestCheckpoint;
             }
         }
 	}
