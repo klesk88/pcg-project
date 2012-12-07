@@ -64,7 +64,9 @@ public class AttachedPathScript : MonoBehaviour
 	public TerrainData terData;
 	public TerrainCollider terrainCollider;
 	public float[,] terrainHeights;
-	
+
+    public float number_of_iterations = 20;
+
 	public void Start()
 	{
         //Debug.Log((Terrain)parentTerrain.GetComponent(typeof(Terrain)));
@@ -515,21 +517,21 @@ public class AttachedPathScript : MonoBehaviour
                     //point of the previous segment
                     {
                         APS.AddNode(p0, nodeObjects[0].width);
-                        APS.AddNode(p1, nodeObjects[0].width);
-                        APS.AddNode(p2, nodeObjects[0].width);
-                        APS.AddNode(p3, nodeObjects[0].width);
+                        //APS.AddNode(p1, nodeObjects[0].width);
+                        //APS.AddNode(p2, nodeObjects[0].width);
+                        //APS.AddNode(p3, nodeObjects[0].width);
                     APS.AddNode(CalculateBezierPoint(0, p0, p1, p2, p3), nodeObjects[0].width);
                         
                     }
 
-                    for (int j = 1; j <= 1; j++)
+                    for (int j = 1; j <=number_of_iterations; j++)
                     {
-                        t = j / (float)5;
-                        APS.AddNode(p0, nodeObjects[0].width);
-                        APS.AddNode(p1, nodeObjects[0].width);
-                        APS.AddNode(p2, nodeObjects[0].width);
-                        APS.AddNode(p3, nodeObjects[0].width);
-                        APS.AddNode(CalculateBezierPoint(0, p0, p1, p2, p3), nodeObjects[0].width);
+                        t = j / number_of_iterations;
+                        //APS.AddNode(p0, nodeObjects[0].width);
+                        //APS.AddNode(p1, nodeObjects[0].width);
+                        //APS.AddNode(p2, nodeObjects[0].width);
+                        //APS.AddNode(p3, nodeObjects[0].width);
+                        APS.AddNode(CalculateBezierPoint(t, p0, p1, p2, p3), nodeObjects[0].width);
                        
                     }
                 }
