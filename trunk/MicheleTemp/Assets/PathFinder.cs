@@ -12,6 +12,7 @@ public class PathFinder : MonoBehaviour {
     bool waitForAStar = false, carEnter = false, carHelpInst = false;
     Quaternion carRotation = Quaternion.identity;
     public GameObject car = null, checkpoint = null, carHelper = null;
+    GameObject carHelperCpy;
 
     Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
     Dictionary<Node, float> gScore = new Dictionary<Node, float>();
@@ -81,6 +82,11 @@ public class PathFinder : MonoBehaviour {
                     carHelper.transform.position = hit.point;
                     carHelper.transform.RotateAround(new Vector3(0, 1, 0), Input.GetAxis("Mouse ScrollWheel"));
                 }
+            }
+            else if (carHelpInst && Input.GetKeyUp(KeyCode.C)) {
+                carHelpInst = false;
+                Destroy(carHelper);
+                carHelper = carHelperCpy;
             }
         }
 	}
@@ -235,6 +241,7 @@ public class PathFinder : MonoBehaviour {
     }
 
     void Start(){
+        carHelperCpy = carHelper;
         GetComponent<Data>().Run();
         Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
         terrainCells = new TerrainPathCell[terComponent.terrainData.heightmapResolution * terComponent.terrainData.heightmapResolution]; ;
