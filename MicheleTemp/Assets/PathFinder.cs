@@ -9,8 +9,9 @@ public class PathFinder : MonoBehaviour {
     RaycastHit hit;
     Node startNode, endNode;
     bool endSelect = false;
-    bool waitForAStar = false, carEnter = false;
-    public GameObject car = null, checkpoint = null;
+    bool waitForAStar = false, carEnter = false, carHelpInst = false;
+    Quaternion carRotation = Quaternion.identity;
+    public GameObject car = null, checkpoint = null, carHelper = null;
 
     Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
     Dictionary<Node, float> gScore = new Dictionary<Node, float>();
@@ -51,7 +52,9 @@ public class PathFinder : MonoBehaviour {
             else if(car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if(Physics.Raycast(ray, out hit)) {
-                    car = (GameObject)Instantiate(car, hit.point + new Vector3(0, 10, 0), Quaternion.identity);
+                    carRotation = carHelper.transform.rotation;
+                    Destroy(carHelper);
+                    car = (GameObject)Instantiate(car, hit.point + new Vector3(0, 10, 0), carRotation);
                     //car.gameObject.SetActiveRecursively(false);
                     Debug.Log("Car placed on track!");
                     carEnter = true;
@@ -67,6 +70,17 @@ public class PathFinder : MonoBehaviour {
             else if(carEnter && CheckpointMgr.latestCheckpoint != Vector3.zero && Input.GetKeyUp(KeyCode.T)) {
                 Debug.Log("Should load from checkpoint now!");
                 car.transform.position = CheckpointMgr.latestCheckpoint;
+            }
+            else if(carHelper != null && !carEnter && Input.GetKey(KeyCode.C)) {
+                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if(Physics.Raycast(ray, out hit)) {
+                    if(!carHelpInst) {
+                        carHelpInst = true;
+                        carHelper = (GameObject)Instantiate(carHelper, hit.point, Quaternion.identity);
+                    }
+                    carHelper.transform.position = hit.point;
+                    carHelper.transform.RotateAround(new Vector3(0, 1, 0), Input.GetAxis("Mouse ScrollWheel"));
+                }
             }
         }
 	}
@@ -235,10 +249,9 @@ public class PathFinder : MonoBehaviour {
         }
     }
 
-    /*void setActiveRecursive(GameObject go, bool act)
-    {
-        go.active = act;
-        foreach(Transform ch in go.transform)
-            ch.gameObject.setActiveRecursive(ch.gameObject,act);
+    /*private Quaternion orientationOnRoad(Vector3 pos) {
+        Quaternion orientation;
+
+        return orientation;
     }*/
 }
