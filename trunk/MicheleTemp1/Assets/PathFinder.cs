@@ -211,18 +211,19 @@ public class PathFinder : MonoBehaviour {
         APS.terrainCells = terrainCells;
 
         
-
+        
         APS.FinalizePath();
-       
+        
       
-        APS.pathMesh.renderer.enabled = true;
-        APS.pathMesh.renderer.material.color = Color.grey;
-        //pathMesh.GetComponent<MeshCollider>().convex = true;
-        pathMesh.AddComponent<Rigidbody>()/*.inertiaTensor = Vector3.one*/;
-        pathMesh.GetComponent<Rigidbody>().useGravity = false;
-        pathMesh.transform.Translate(new Vector3(0, 0.2f, 0));
-        pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        pathMesh.AddComponent<CollisionMover>();
+         APS.pathMesh.renderer.enabled = true;
+         APS.pathMesh.renderer.material.color = Color.grey;
+         //pathMesh.GetComponent<MeshCollider>().convex = true;
+         pathMesh.AddComponent<Rigidbody>();
+         pathMesh.GetComponent<Rigidbody>().useGravity = false;
+         pathMesh.transform.Translate(new Vector3(0, 0.2f, 0));
+         pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+         pathMesh.AddComponent<CollisionMover>();
+          
        
     }
 
