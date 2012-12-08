@@ -66,6 +66,11 @@ public class AttachedPathScript : MonoBehaviour
 	public float[,] terrainHeights;
 
     public float number_of_iterations = 20;
+    private List<PathNodeObjects> click_coordinates;
+    RaycastHit hit;
+    Ray ray = new Ray();
+    bool endSelect = false;
+
 
 	public void Start()
 	{
@@ -74,8 +79,48 @@ public class AttachedPathScript : MonoBehaviour
 		if(terComponent == null)
 			Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");	
 	}
-	
-   
+    
+   void Update()
+    {
+        
+        if (Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.U))
+        {
+           
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("asdsad11122222 ");
+                if (!endSelect)
+                {
+                    click_coordinates = new List<PathNodeObjects>();
+                    int index = nearestNode(hit.point);
+                    click_coordinates.Add(nodeObjects[index-1]);
+                    click_coordinates.Add(nodeObjects[index]);
+                   
+                    //    startNode.getGameObject().renderer.material.color = Color.green;
+                    Debug.Log("START NODE COORDINATES: " );
+                    endSelect = true;
+                }
+                else
+                {
+                    Debug.Log("asdsad ");
+                    int index = nearestNode(hit.point);
+                    click_coordinates.Add(nodeObjects[index]);
+                    click_coordinates.Add(nodeObjects[index+1]);
+                    //    endNode.getGameObject().renderer.material.color = Color.green;
+                    Debug.Log("GOAL NODE COORDINATES: " );
+                    smoothPath();
+                    
+                    endSelect = false;
+                }
+            }
+        }
+    }
+
+    private void nearestNode()
+    {
+        
+    }
 
 	public void NewPath()
 	{
@@ -427,61 +472,29 @@ public class AttachedPathScript : MonoBehaviour
 	}
 
 
+    public int nearestNode(Vector3 pos)
+    {
+        float closestDist = Mathf.Infinity;
+        int index = -1;
+        
+        for(int i=0;i<nodeObjects.Length;i++)
+        {
+            float dist = Vector3.Distance(pos, nodeObjects[i].position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
     public void smoothPath()
     {
         if (nodeObjects.Length > 2)
         {
-            Debug.Log("inside");
-        //Vector3 distance = nodeObjects[0].position - nodeObjects[1].position;
-
-       
-            Debug.Log("inside1");
-                /*
-                float[] points_x = new float[APS.nodeObjects.Length - 2];
-                float[] points_z = new float[APS.nodeObjects.Length - 2];
-                for (int i = 1; i < APS.nodeObjects.Length - 1; i++)
-                {
-                    points_x[i] = APS.nodeObjects[i].position.x;
-                    points_z[i] = APS.nodeObjects[i].position.z;    
-                    Debug.Log("inside");
-                }
-
-                Cubic[] X = APS.calcNaturalCubic(points_x.Length-1, points_x);
-                Cubic[] Z = APS.calcNaturalCubic(points_z.Length-1, points_z);
-               */
-                /*
-                if (nodeObjects.Length == 3)
-                {
-                    Vector3 pos = new Vector3(Mathf.Abs(nodeObjects[0].position.x - nodeObjects[2].position.x) + nodeObjects[1].position.x, nodeObjects[1].position.y, Mathf.Abs(nodeObjects[0].position.z - nodeObjects[2].position.z) + nodeObjects[1].position.z);
-                    nodeObjects[1].position = pos;
-                    return;
-                }
-               
-                float t = 0;
-                Vector3 q1;
-                Vector3 q0 = CalculateBezierPoint(t, nodeObjects[0].position, nodeObjects[1].position, nodeObjects[2].position, nodeObjects[3].position);
-                for (int i = 1; i < nodeObjects.Length; i++)
-                {
-                    /*
-                    if ((j) % 3 == 0 && j!=0)
-                    {
-                        j = 0;
-                        Debug.Log("temp " + temp[1].position+ " " + temp[0].position);
-                        Vector3 pos = new Vector3(Mathf.Abs(temp[0].position.x - temp[2].position.x)/2 + temp[1].position.x, temp[1].position.y, Mathf.Abs(temp[0].position.z - temp[2].position.z)/2 + temp[1].position.z);
-                        nodeObjects[i-1].position = pos;
-                        temp = new PathNodeObjects[3];
-                    }
-                    else
-                    {
-                        Debug.Log(i);
-                        temp[j] = nodeObjects[i];
-                        j++;
-                    }
-                     */
-
-
-                   
-                //}
+           
             pathMesh = new GameObject();
             pathMesh.name = "Path";
             //pathMesh.tag = "Road";
@@ -501,26 +514,38 @@ public class AttachedPathScript : MonoBehaviour
             //APS.pathTexture = 1;
             APS.isRoad = true;
             APS.pathSmooth = 5;
-           
-               
+            PathNodeObjects[] node = new PathNodeObjects[4];
+            int h=0;
+
+            for (int i = 0; i < nodeObjects.Length; i++)
+            {
+                if (nodeObjects[i].position != click_coordinates[0].position)
+                {
+                    APS.AddNode(nodeObjects[i].position, nodeObjects[i].width);
+                }
+                else
+                {
+                    break;
+                }
+            }
              float t = 0;
                 List<PathNodeObjects> temp = new List<PathNodeObjects>();
-                for (int i = 0; i < nodeObjects.Length - 3; i += 3)
+                for (int i = 0; i < click_coordinates.Count - 3; i += 3)
                 {
-                    Vector3 p0 = nodeObjects[i].position;
-                    Vector3 p1 = nodeObjects[i + 1].position;
-                    Vector3 p2 = nodeObjects[i + 2].position;
-                    Vector3 p3 = nodeObjects[i + 3].position;
+                    Vector3 p0 = click_coordinates[i].position;
+                    Vector3 p1 = click_coordinates[i + 1].position;
+                    Vector3 p2 = click_coordinates[i + 2].position;
+                    Vector3 p3 = click_coordinates[i + 3].position;
 
                     if (i == 0) //Only do this for the first endpoint.
                     //When i != 0, this coincides with the end
                     //point of the previous segment
                     {
-                        APS.AddNode(p0, nodeObjects[0].width);
+                        APS.AddNode(p0, click_coordinates[0].width);
                         //APS.AddNode(p1, nodeObjects[0].width);
                         //APS.AddNode(p2, nodeObjects[0].width);
                         //APS.AddNode(p3, nodeObjects[0].width);
-                    APS.AddNode(CalculateBezierPoint(0, p0, p1, p2, p3), nodeObjects[0].width);
+                        APS.AddNode(CalculateBezierPoint(0, p0, p1, p2, p3), click_coordinates[0].width);
                         
                     }
 
@@ -531,12 +556,28 @@ public class AttachedPathScript : MonoBehaviour
                         //APS.AddNode(p1, nodeObjects[0].width);
                         //APS.AddNode(p2, nodeObjects[0].width);
                         //APS.AddNode(p3, nodeObjects[0].width);
-                        APS.AddNode(CalculateBezierPoint(t, p0, p1, p2, p3), nodeObjects[0].width);
+                        APS.AddNode(CalculateBezierPoint(t, p0, p1, p2, p3), click_coordinates[0].width);
                        
                     }
                 }
+                bool s = false;
+                //for (int i = 0; i < nodeObjects.Length; i++)
+                //{
+                //    if (s)
+                //    {
+                //        AddNode(nodeObjects[i].position, nodeObjects[i].width);
+                //    }
+                //    if (nodeObjects[i].position != click_coordinates[3].position)
+                //    {
+                //        continue;
+                //    }
+                //    else
+                //    {
+                //        s = true;
+                //    }
 
-              
+                    
+                //}
                 
                 
                 //for(int i=0;i<nodeObjects.Length;i++)

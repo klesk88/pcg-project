@@ -27,7 +27,10 @@ public class AttachedPathEditor : Editor
 		AttachedPathScript pathScript = (AttachedPathScript) target as AttachedPathScript;
 		
 		Event currentEvent = Event.current;
-		
+
+
+      
+
 		if(pathScript.addNodeMode == true)
 		{
 			// If P is pressed, than create a node at selected point (window has to have focus)
