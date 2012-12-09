@@ -21,7 +21,7 @@ public class EditorStreet : Editor {
         StreetCreation street_creation = (StreetCreation)target as StreetCreation;
         //read the file so i know how many buildings are 
       
-        street_creation.readStreets();
+        
         number_of_streets = street_creation.getNumberOfStreets();
        
 
@@ -35,7 +35,11 @@ public class EditorStreet : Editor {
         StreetCreation street_creation = (StreetCreation)target as StreetCreation;
 
 
-       
+        if (street_creation.emptyDictionary()) {
+
+            setNumberOfStreets();
+            street_creation.getData();
+        }
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Separator();
@@ -133,12 +137,10 @@ public class EditorStreet : Editor {
         StreetCreation street_creation = (StreetCreation)target as StreetCreation;
 
         Event currentEvent = Event.current;
+
         if (street_creation.emptyDictionary()) {
-         
-            setNumberOfStreets();
             street_creation.getData();
         }
-
       
 
      //   if (currentEvent.type == EventType.keyUp && currentEvent.character == 'r')

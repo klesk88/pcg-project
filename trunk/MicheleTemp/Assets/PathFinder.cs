@@ -256,7 +256,7 @@ public class PathFinder : MonoBehaviour {
 
     void Start(){
         carHelperCpy = carHelper;
-        GetComponent<Data>().Run();
+        //GetComponent<Data>().Run();
         Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
         terrainCells = new TerrainPathCell[terComponent.terrainData.heightmapResolution * terComponent.terrainData.heightmapResolution]; ;
         float[,] terrainHeights = terComponent.terrainData.GetHeights(0, 0, terComponent.terrainData.heightmapResolution, terComponent.terrainData.heightmapResolution);
