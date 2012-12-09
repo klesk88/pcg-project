@@ -9,6 +9,7 @@ public class SmoothEditor : Editor{
     bool endSelect = false;
     Ray ray = new Ray();
     RaycastHit hit;
+    int startIndex, endIndex;
 
     public override void OnInspectorGUI() {
         EditorGUIUtility.LookLikeControls();
@@ -22,7 +23,7 @@ public class SmoothEditor : Editor{
         EditorGUILayout.Separator();
         EditorGUILayout.Separator();
         EditorGUILayout.PrefixLabel("Reads Road");
-        aps.number_of_iterations = EditorGUILayout.IntSlider(aps.number_of_iterations,1,400);
+        aps.number_of_iterations = EditorGUILayout.IntSlider(aps.number_of_iterations,1,10);
 
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.Separator();
@@ -51,23 +52,32 @@ public class SmoothEditor : Editor{
 
                 if (!endSelect) {
                     aps.click_coordinates = new List<PathNodeObjects>();
-                    int index = aps.nearestNode(hit.point);
-                    Debug.Log("startIndex: " + index);
-                    aps.click_coordinates.Add(aps.nodeObjects[index - 1]);
-                    aps.click_coordinates.Add(aps.nodeObjects[index]);
+                    startIndex = aps.nearestNode(hit.point);
+                    //Debug.Log("startIndex: " + index);
+                    
 
                     //    startNode.getGameObject().renderer.material.color = Color.green;
-                    Debug.Log("START NODE COORDINATES: " + aps.nodeObjects[index - 1].position + " "  + aps.nodeObjects[index].position);
+                   // Debug.Log("START NODE COORDINATES: " + aps.nodeObjects[index - 1].position + " "  + aps.nodeObjects[index].position);
                     endSelect = true;
                 }
                 else {
-                    Debug.Log("asdsad ");
-                    int index = aps.nearestNode(hit.point);
-                    aps.click_coordinates.Add(aps.nodeObjects[index]);
-                    aps.click_coordinates.Add(aps.nodeObjects[index + 1]);
-                    Debug.Log("endIndex: " + index);
+                 //   Debug.Log("asdsad ");
+                    endIndex = aps.nearestNode(hit.point);
+                    if (endIndex > startIndex) {
+                        aps.click_coordinates.Add(aps.nodeObjects[startIndex - 1]);
+                        aps.click_coordinates.Add(aps.nodeObjects[startIndex]);
+                        aps.click_coordinates.Add(aps.nodeObjects[endIndex]);
+                        aps.click_coordinates.Add(aps.nodeObjects[endIndex + 1]);
+                    }
+                    else {
+                        aps.click_coordinates.Add(aps.nodeObjects[endIndex - 1]);
+                        aps.click_coordinates.Add(aps.nodeObjects[endIndex]);
+                        aps.click_coordinates.Add(aps.nodeObjects[startIndex]);
+                        aps.click_coordinates.Add(aps.nodeObjects[startIndex + 1]);
+                    }
+                  //  Debug.Log("endIndex: " + index);
                     //    endNode.getGameObject().renderer.material.color = Color.green;
-                    Debug.Log("GOAL NODE COORDINATES: " + aps.nodeObjects[index].position + " " + aps.nodeObjects[index+1].position);
+                  //  Debug.Log("GOAL NODE COORDINATES: " + aps.nodeObjects[index].position + " " + aps.nodeObjects[index+1].position);
                     aps.smoothPath();
 
                     endSelect = false;

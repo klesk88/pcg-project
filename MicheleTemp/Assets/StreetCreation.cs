@@ -24,14 +24,7 @@ public class StreetCreation : MonoBehaviour {
         return false;
     }
 
-    public void readStreets() {
-        Debug.Log("Streets Read!");
-        parser = new XMLParser();
-        data = new List<List<double[]>>();
-        data = parser.read("Highway.txt");
-       
-    }
-
+   
     public int getNumberOfStreets() {
         return data.Count;
     }
@@ -40,6 +33,13 @@ public class StreetCreation : MonoBehaviour {
     {
         if (path_finder == null) {
             init();
+        }
+
+        if (data == null) {
+            Debug.Log("Streets Read!");
+            parser = new XMLParser();
+            data = new List<List<double[]>>();
+            data = parser.read("Highway.txt");
         }
 
         Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
