@@ -10,8 +10,16 @@ public class VisualizerOld : MonoBehaviour {
         extrusion.transform.parent = state.getObject().transform;
         extrusion.AddComponent("MeshFilter");
         extrusion.AddComponent("MeshRenderer");
-        extrusion.GetComponent<MeshRenderer>().material.color = Color.white;
-        Mesh mesh = extrusion.GetComponent<MeshFilter>().mesh;
+        extrusion.GetComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Diffuse"));
+        extrusion.GetComponent<MeshRenderer>().sharedMaterial.color = Color.white;
+        //extrusion.GetComponent<MeshRenderer>().sharedMaterial.color = Color.white;
+        Mesh mesh = extrusion.GetComponent<MeshFilter>().sharedMesh;
+        if (mesh == null) {
+            mesh = new Mesh();
+            extrusion.GetComponent<MeshFilter>().sharedMesh = mesh;
+        }
+        else
+            mesh.Clear();
         Vector3[] groundVertices = state.getFace();
         Vector3[] vertices = new Vector3[2 * groundVertices.Length];
         Vector3[] topVertices = new Vector3[groundVertices.Length];
