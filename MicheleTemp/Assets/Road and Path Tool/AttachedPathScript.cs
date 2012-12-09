@@ -554,7 +554,7 @@ public class AttachedPathScript : MonoBehaviour
 
                     for (int j = 1; j <=number_of_iterations; j++)
                     {
-                        t = j / number_of_iterations;
+                        t = j / (float)number_of_iterations;
                         //APS.AddNode(p0, nodeObjects[0].width);
                         //APS.AddNode(p1, nodeObjects[0].width);
                         //APS.AddNode(p2, nodeObjects[0].width);
@@ -565,19 +565,19 @@ public class AttachedPathScript : MonoBehaviour
                 }
                 bool s = false;
 
-                //for (int i = 0; i < nodeObjects.Length; i++) {
-                //    if (s) {
-                //        APS.AddNode(nodeObjects[i].position, nodeObjects[i].width);
-                //    }
-                //    if (nodeObjects[i].position != click_coordinates[3].position) {
-                //        continue;
-                //    }
-                //    else {
-                //        s = true;
-                //    }
+                for (int i = 0; i < nodeObjects.Length; i++) {
+                    if (s) {
+                        APS.AddNode(nodeObjects[i].position, nodeObjects[i].width);
+                    }
+                    if (nodeObjects[i].position != click_coordinates[3].position) {
+                        continue;
+                    }
+                    else {
+                        s = true;
+                    }
 
 
-                //}
+                }
                 
                 
                 //for(int i=0;i<nodeObjects.Length;i++)
