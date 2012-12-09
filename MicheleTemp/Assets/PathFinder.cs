@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class PathFinder : MonoBehaviour {
     Ray ray = new Ray();
     RaycastHit hit;
-    Node startNode, endNode;
+    public Node startNode, endNode;
     bool endSelect = false;
     bool waitForAStar = false, carEnter = false, carHelpInst = false;
     Quaternion carRotation = Quaternion.identity;
@@ -24,16 +24,19 @@ public class PathFinder : MonoBehaviour {
     ArrayList neighbours = new ArrayList();
     ArrayList pathPoints = new ArrayList();
 
-    TerrainPathCell[] terrainCells;
+    public TerrainPathCell[] terrainCells;
 
     public static Dictionary<Vector3, Node> nodeMap = new Dictionary<Vector3, Node>();
  	
 	// Update is called once per frame
-	void Update () {
+	public void updateLoop () {
+       
         if (!waitForAStar) {
-            if(Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
+           // if(Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Debug.Log("Before Physics Raycast");
                 if(Physics.Raycast(ray, out hit)) {
+                    Debug.Log("After Physics Raycast");
                     if(!endSelect) {
                         startNode = nearestNode(hit.point);
                         //    startNode.getGameObject().renderer.material.color = Color.green;
@@ -49,8 +52,8 @@ public class PathFinder : MonoBehaviour {
                         endSelect = false;
                     }
                 }
-            }
-            else if(car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
+           // }
+           if(car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if(Physics.Raycast(ray, out hit)) {
                     carRotation = carHelper.transform.rotation;
@@ -91,7 +94,7 @@ public class PathFinder : MonoBehaviour {
         }
 	}
 
-    ArrayList FindPath() {
+    public ArrayList FindPath() {
         cameFrom.Clear();
         gScore.Clear();
         fScore.Clear();
@@ -214,6 +217,8 @@ public class PathFinder : MonoBehaviour {
                     break;
                 }
 
+              
+
                 if (check) {
                     DestroyImmediate(pathMesh);
                     continue;
@@ -224,14 +229,23 @@ public class PathFinder : MonoBehaviour {
         APS.terrainCells = terrainCells;
         APS.FinalizePath();
         APS.pathMesh.renderer.enabled = true;
-        APS.pathMesh.renderer.material.color = Color.grey;
+        APS.pathMesh.renderer.sharedMaterial = new Material(Shader.Find("Diffuse"));
+        APS.pathMesh.renderer.sharedMaterial.color = Color.grey;
         //pathMesh.GetComponent<MeshCollider>().convex = true;
         pathMesh.AddComponent<Rigidbody>()/*.inertiaTensor = Vector3.one*/;
         pathMesh.GetComponent<Rigidbody>().useGravity = false;
         pathMesh.transform.Translate(new Vector3(0, 0.2f, 0));
         pathMesh.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         pathMesh.AddComponent<CollisionMover>();
-       
+        for (int i = 0; i < APS.nodeObjects.Length; i++) {
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.renderer.sharedMaterial = new Material(Shader.Find("Diffuse"));
+            sphere.renderer.sharedMaterial.color = Color.blue;
+            sphere.transform.localScale = new Vector3(5, 5, 5);
+            sphere.transform.position = APS.nodeObjects[i].position;
+            sphere.transform.parent = pathMesh.transform;
+        }
+   
     }
 
     public void clearPathPoints() {

@@ -27,6 +27,7 @@ public struct TerrainPathCell
 	public bool isAdded;
 };
 
+[System.Serializable]
 public class AttachedPathScript : MonoBehaviour 
 {
 	// Array of terrain cells for convenience 
@@ -36,6 +37,7 @@ public class AttachedPathScript : MonoBehaviour
 	public bool isRoad;
 	public bool isFinalized;
 	
+    [SerializeField]
 	public PathNodeObjects[] nodeObjects;
 	public Vector3[] nodeObjectVerts; // keeps vertice positions for handles
 	
@@ -64,7 +66,14 @@ public class AttachedPathScript : MonoBehaviour
 	public TerrainData terData;
 	public TerrainCollider terrainCollider;
 	public float[,] terrainHeights;
-	
+
+    public int number_of_iterations = 100;
+    public List<PathNodeObjects> click_coordinates;
+    RaycastHit hit;
+    Ray ray = new Ray();
+    bool endSelect = false;
+
+
 	public void Start()
 	{
         //Debug.Log((Terrain)parentTerrain.GetComponent(typeof(Terrain)));
@@ -72,8 +81,47 @@ public class AttachedPathScript : MonoBehaviour
 		if(terComponent == null)
 			Debug.LogError("This script must be attached to a terrain object - Null reference will be thrown");	
 	}
-	
-   
+    
+   void Update()
+    {
+        
+        
+           
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("asdsad11122222 ");
+                if (!endSelect)
+                {
+                    click_coordinates = new List<PathNodeObjects>();
+                    int index = nearestNode(hit.point);
+                    click_coordinates.Add(nodeObjects[index-1]);
+                    click_coordinates.Add(nodeObjects[index]);
+                   
+                    //    startNode.getGameObject().renderer.material.color = Color.green;
+                    Debug.Log("START NODE COORDINATES: " );
+                    endSelect = true;
+                }
+                else
+                {
+                    Debug.Log("asdsad ");
+                    int index = nearestNode(hit.point);
+                    click_coordinates.Add(nodeObjects[index]);
+                    click_coordinates.Add(nodeObjects[index+1]);
+                    //    endNode.getGameObject().renderer.material.color = Color.green;
+                    Debug.Log("GOAL NODE COORDINATES: " );
+                    smoothPath();
+                    
+                    endSelect = false;
+                }
+            }
+        
+    }
+
+    private void nearestNode()
+    {
+        
+    }
 
 	public void NewPath()
 	{
@@ -423,7 +471,162 @@ public class AttachedPathScript : MonoBehaviour
 
         return true;
 	}
-	
+
+
+    public int nearestNode(Vector3 pos)
+    {
+        float closestDist = Mathf.Infinity;
+        int index = -1;
+
+        for(int i=0;i<nodeObjects.Length;i++)
+        {
+            float dist = Vector3.Distance(pos, nodeObjects[i].position);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    public void smoothPath()
+    {
+        if (nodeObjects.Length > 2)
+        {
+           
+            pathMesh = new GameObject();
+            pathMesh.name = "Path";
+            //pathMesh.tag = "Road";
+            pathMesh.AddComponent(typeof(MeshFilter));
+            pathMesh.AddComponent(typeof(MeshRenderer));
+            pathMesh.AddComponent("AttachedPathScript");
+
+
+
+            AttachedPathScript APS = (AttachedPathScript)pathMesh.GetComponent("AttachedPathScript");
+            APS.pathMesh = pathMesh;
+            APS.parentTerrain = parentTerrain;
+            APS.NewPath();
+            APS.terrainCells = new TerrainPathCell[terData.heightmapResolution * terData.heightmapResolution];
+            APS.terrainCells = terrainCells;
+            APS.pathWidth = 3;
+            //APS.pathTexture = 1;
+            APS.isRoad = true;
+            APS.pathSmooth = 5;
+            PathNodeObjects[] node = new PathNodeObjects[4];
+            int h=0;
+
+            for (int i = 0; i < nodeObjects.Length; i++)
+            {
+                if (nodeObjects[i].position != click_coordinates[0].position)
+                {
+                    APS.AddNode(nodeObjects[i].position, nodeObjects[i].width);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            Debug.Log(number_of_iterations);
+             float t = 0;
+                List<PathNodeObjects> temp = new List<PathNodeObjects>();
+                Debug.Log("coo " + click_coordinates.Count);
+                for (int i = 0; i < click_coordinates.Count - 3; i += 3)
+                {
+                    Vector3 p0 = click_coordinates[i].position;
+                    Vector3 p1 = click_coordinates[i + 1].position;
+                    Vector3 p2 = click_coordinates[i + 2].position;
+                    Vector3 p3 = click_coordinates[i + 3].position;
+
+                    if (i == 0) //Only do this for the first endpoint.
+                    //When i != 0, this coincides with the end
+                    //point of the previous segment
+                    {
+                        APS.AddNode(p0, click_coordinates[0].width);
+                        //APS.AddNode(p1, nodeObjects[0].width);
+                        //APS.AddNode(p2, nodeObjects[0].width);
+                        //APS.AddNode(p3, nodeObjects[0].width);
+                        APS.AddNode(CalculateBezierPoint(0, p0, p1, p2, p3), click_coordinates[0].width);
+                        
+                    }
+
+                    for (int j = 1; j <=number_of_iterations; j++)
+                    {
+                        t = j / number_of_iterations;
+                        //APS.AddNode(p0, nodeObjects[0].width);
+                        //APS.AddNode(p1, nodeObjects[0].width);
+                        //APS.AddNode(p2, nodeObjects[0].width);
+                        //APS.AddNode(p3, nodeObjects[0].width);
+                        APS.AddNode(CalculateBezierPoint(t, p0, p1, p2, p3), click_coordinates[0].width);
+                       
+                    }
+                }
+                bool s = false;
+
+                //for (int i = 0; i < nodeObjects.Length; i++) {
+                //    if (s) {
+                //        APS.AddNode(nodeObjects[i].position, nodeObjects[i].width);
+                //    }
+                //    if (nodeObjects[i].position != click_coordinates[3].position) {
+                //        continue;
+                //    }
+                //    else {
+                //        s = true;
+                //    }
+
+
+                //}
+                
+                
+                //for(int i=0;i<nodeObjects.Length;i++)
+                //{
+                //    APS.AddNode(nodeObjects[i].position,nodeObjects[i].width);
+                //}
+
+                APS.CreatePath(pathSmooth,pathFlat,isRoad);
+
+                APS.FinalizePath();
+
+                for (int i = 0; i < APS.nodeObjects.Length; i++) {
+                    GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    sphere.renderer.sharedMaterial = new Material(Shader.Find("Diffuse"));
+                    sphere.renderer.sharedMaterial.color = Color.blue;
+                    sphere.transform.localScale = new Vector3(5, 5, 5);
+                    sphere.transform.position = APS.nodeObjects[i].position;
+                    sphere.transform.parent = pathMesh.transform;
+                }
+            
+        }
+        
+        //for (int i = 0; i < APS.nodeObjects.Length; i++)
+        //{
+        //    PathNodeObjects pathNode = new PathNodeObjects();
+        //    pathNode = APS.nodeObjects[i];
+        //    Debug.Log(pathNode.position.ToString());
+        //}
+
+    }
+
+
+
+   private Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+    {
+      float u = 1 - t;
+      float tt = t*t;
+      float uu = u*u;
+      float uuu = uu * u;
+      float ttt = tt * t;
+ 
+      Vector3 p = uuu * p0; //first term
+      p += 3 * uu * t * p1; //second term
+      p += 3 * u * tt * p2; //third term
+      p += ttt * p3; //fourth term
+ 
+     return p;
+    }
+
 	public bool FinalizePath()
 	{
 		transform.localScale = new Vector3(1,1,1);
@@ -1004,6 +1207,8 @@ public class AttachedPathScript : MonoBehaviour
 	}
 }
 
+
+ 
 public class Cubic
 {
   float a,b,c,d;        
