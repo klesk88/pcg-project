@@ -29,68 +29,10 @@ public class PathFinder : MonoBehaviour {
     public static Dictionary<Vector3, Node> nodeMap = new Dictionary<Vector3, Node>();
  	
 	// Update is called once per frame
-	public void updateLoop () {
-       
-        if (!waitForAStar) {
-           // if(Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.R)) {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                Debug.Log("Before Physics Raycast");
-                if(Physics.Raycast(ray, out hit)) {
-                    Debug.Log("After Physics Raycast");
-                    if(!endSelect) {
-                        startNode = nearestNode(hit.point);
-                        //    startNode.getGameObject().renderer.material.color = Color.green;
-                        Debug.Log("START NODE COORDINATES: " + startNode.getPosition());
-                        endSelect = true;
-                    }
-                    else {
-                        endNode = nearestNode(hit.point);
-                        //    endNode.getGameObject().renderer.material.color = Color.green;
-                        Debug.Log("GOAL NODE COORDINATES: " + endNode.getPosition());
-                        waitForAStar = true;
-                        ArrayList bestPath = FindPath();
-                        endSelect = false;
-                    }
-                }
-           // }
-           if(car != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.C)) {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if(Physics.Raycast(ray, out hit)) {
-                    carRotation = carHelper.transform.rotation;
-                    Destroy(carHelper);
-                    car = (GameObject)Instantiate(car, hit.point + new Vector3(0, 10, 0), carRotation);
-                    //car.gameObject.SetActiveRecursively(false);
-                    Debug.Log("Car placed on track!");
-                    carEnter = true;
-                }
-            }
-            else if(checkpoint != null && Input.GetMouseButtonUp(0) && Input.GetKey(KeyCode.D)) {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if(Physics.Raycast(ray, out hit)) {
-                    Instantiate(checkpoint, hit.point, Quaternion.identity);
-                    Debug.Log("Checkpoint placed on track!");
-                }
-            }
-            else if(carEnter && CheckpointMgr.latestCheckpoint != Vector3.zero && Input.GetKeyUp(KeyCode.T)) {
-                Debug.Log("Should load from checkpoint now!");
-                car.transform.position = CheckpointMgr.latestCheckpoint;
-            }
-            else if(carHelper != null && !carEnter && Input.GetKey(KeyCode.C)) {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if(Physics.Raycast(ray, out hit)) {
-                    if(!carHelpInst) {
-                        carHelpInst = true;
-                        carHelper = (GameObject)Instantiate(carHelper, hit.point, Quaternion.identity);
-                    }
-                    carHelper.transform.position = hit.point;
-                    carHelper.transform.RotateAround(new Vector3(0, 1, 0), Input.GetAxis("Mouse ScrollWheel"));
-                }
-            }
-            else if (carHelpInst && Input.GetKeyUp(KeyCode.C)) {
-                carHelpInst = false;
-                Destroy(carHelper);
-                carHelper = carHelperCpy;
-            }
+	public void Update () {
+        if(car != null && CheckpointMgr.latestCheckpoint != Vector3.zero && Input.GetKeyUp(KeyCode.T)) {
+            Debug.Log("Should load from checkpoint now!");
+            car.transform.position = CheckpointMgr.latestCheckpoint;
         }
 	}
 
@@ -243,6 +185,8 @@ public class PathFinder : MonoBehaviour {
             sphere.renderer.sharedMaterial.color = Color.blue;
             sphere.transform.localScale = new Vector3(5, 5, 5);
             sphere.transform.position = APS.nodeObjects[i].position;
+            sphere.AddComponent<DestroyOnLoad>();
+            DestroyImmediate(sphere.GetComponent<SphereCollider>());
             sphere.transform.parent = pathMesh.transform;
         }
    
@@ -255,7 +199,8 @@ public class PathFinder : MonoBehaviour {
     }
 
     void Start(){
-        carHelperCpy = carHelper;
+        //carHelperCpy = carHelper;
+        car = GameObject.Find("car");
         //GetComponent<Data>().Run();
         Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
         terrainCells = new TerrainPathCell[terComponent.terrainData.heightmapResolution * terComponent.terrainData.heightmapResolution]; ;

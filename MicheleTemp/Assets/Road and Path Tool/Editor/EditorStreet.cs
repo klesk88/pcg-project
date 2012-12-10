@@ -10,10 +10,10 @@ public class EditorStreet : Editor {
     Node startNode, endNode;
     bool endSelect = false;
     bool waitForAStar = false;
-    bool rStarted = false, checkpointPlacement = false;
+    bool rStarted = false, checkpointPlacement = false, carPlacement = false;
     float timeStamp = 0;
 
-    private GameObject checkpoint = null;
+    private GameObject checkpoint = null, car = null;
     private int number_of_streets;
     private bool enter = false;
 
@@ -180,11 +180,32 @@ public class EditorStreet : Editor {
                 }
             }
         }
+        else if(currentEvent.type == EventType.KeyDown && currentEvent.keyCode == KeyCode.C) {
+            ray = Camera.current.ScreenPointToRay(new Vector2(currentEvent.mousePosition.x, Screen.height - (currentEvent.mousePosition.y + 25)));
+            if(Physics.Raycast(ray, out hit)) {                
+                if(!carPlacement) {
+                    carPlacement = true;
+                    car = (GameObject)Instantiate(street_creation.path_finder.carHelper, hit.point, Quaternion.identity);
+                }
+                else{
+                    carPlacement = false;
+                    Instantiate(street_creation.path_finder.car, car.transform.position + new Vector3(0,5,0), car.transform.rotation).name = "car";
+                    DestroyImmediate(car);
+                    EditorApplication.isPlaying = true;
+                    Debug.Log("Car PLACED on track!");
+                }
+            }
+        }
         else if(currentEvent.type == EventType.MouseUp && currentEvent.button == 1) {
             if(checkpointPlacement && checkpoint != null) {
                 Debug.Log("Should destroy checkpoint!");
                 DestroyImmediate(checkpoint);
                 checkpointPlacement = false;
+            }
+            else if(carPlacement && car != null) {
+                Debug.Log("Should destroy car!");
+                DestroyImmediate(car);
+                carPlacement = false;
             }
         }
         else if(currentEvent.type == EventType.MouseMove) {
@@ -197,6 +218,17 @@ public class EditorStreet : Editor {
                 }
                 else {
                     checkpoint.transform.RotateAround(Vector3.up, currentEvent.delta.x/20f);
+                }
+            }
+            else if(carPlacement) {
+                if(!currentEvent.shift) {
+                    ray = Camera.current.ScreenPointToRay(new Vector2(currentEvent.mousePosition.x, Screen.height - (currentEvent.mousePosition.y + 25)));
+                    if(Physics.Raycast(ray, out hit)) {
+                        car.transform.position = hit.point;
+                    }
+                }
+                else {
+                    car.transform.RotateAround(Vector3.up, currentEvent.delta.x / 20f);
                 }
             }
         }
