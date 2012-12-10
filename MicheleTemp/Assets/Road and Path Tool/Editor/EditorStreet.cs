@@ -10,8 +10,10 @@ public class EditorStreet : Editor {
     Node startNode, endNode;
     bool endSelect = false;
     bool waitForAStar = false;
-    bool rStarted = false;
+    bool rStarted = false, checkpointPlacement = false;
+    float timeStamp = 0;
 
+    private GameObject checkpoint = null;
     private int number_of_streets;
     private bool enter = false;
 
@@ -86,7 +88,7 @@ public class EditorStreet : Editor {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Separator();
         EditorGUILayout.Separator();
-        EditorGUILayout.PrefixLabel("Chacpoint");
+        EditorGUILayout.PrefixLabel("Checkpoint Prefab");
         street_creation.checkpoint = (GameObject)EditorGUILayout.ObjectField(street_creation.checkpoint, typeof(GameObject));
 
         EditorGUILayout.EndHorizontal();
@@ -96,7 +98,7 @@ public class EditorStreet : Editor {
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.Separator();
         EditorGUILayout.Separator();
-        EditorGUILayout.PrefixLabel("Mesh Car");
+        EditorGUILayout.PrefixLabel("Car Mesh");
         street_creation.carHelper = (GameObject)EditorGUILayout.ObjectField(street_creation.carHelper, typeof(GameObject));
 
         EditorGUILayout.EndHorizontal();
@@ -141,17 +143,10 @@ public class EditorStreet : Editor {
         if (street_creation.emptyDictionary()) {
             street_creation.getData();
         }
-      
 
-     //   if (currentEvent.type == EventType.keyUp && currentEvent.character == 'r')
-     //       Debug.Log("EventType: " + currentEvent.type);
-
-
-        if (currentEvent.type == EventType.KeyUp /* && currentEvent.character == 'r'*//*Input.GetKey(KeyCode.R)*/) {
-            //street_creation.updatePathfinder();
-            //ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (currentEvent.type == EventType.KeyUp && currentEvent.keyCode == KeyCode.R) {
             ray = Camera.current.ScreenPointToRay(new Vector2(currentEvent.mousePosition.x, Screen.height - (currentEvent.mousePosition.y + 25)));
-            if (Physics.Raycast(ray, out hit) && currentEvent.keyCode == KeyCode.R) {
+            if (Physics.Raycast(ray, out hit)) {
                 Debug.Log("After Physics Raycast");
                 Debug.Log("hit.point:" + hit.point);
                 if (!endSelect) {
@@ -172,8 +167,39 @@ public class EditorStreet : Editor {
        
           
         }
-
-
+        else if(currentEvent.type == EventType.KeyDown && currentEvent.keyCode == KeyCode.D) {
+            ray = Camera.current.ScreenPointToRay(new Vector2(currentEvent.mousePosition.x, Screen.height - (currentEvent.mousePosition.y + 25)));
+            if(Physics.Raycast(ray, out hit)) {                
+                if(!checkpointPlacement) {
+                    checkpointPlacement = true;
+                    checkpoint = (GameObject)Instantiate(street_creation.path_finder.checkpoint, hit.point, Quaternion.identity);
+                }
+                else{
+                    checkpointPlacement = false;
+                    Debug.Log("Checkpoint PLACED on track!");
+                }
+            }
+        }
+        else if(currentEvent.type == EventType.MouseUp && currentEvent.button == 1) {
+            if(checkpointPlacement && checkpoint != null) {
+                Debug.Log("Should destroy checkpoint!");
+                DestroyImmediate(checkpoint);
+                checkpointPlacement = false;
+            }
+        }
+        else if(currentEvent.type == EventType.MouseMove) {
+            if(checkpointPlacement) {
+                if(!currentEvent.shift) {
+                    ray = Camera.current.ScreenPointToRay(new Vector2(currentEvent.mousePosition.x, Screen.height - (currentEvent.mousePosition.y + 25)));
+                    if(Physics.Raycast(ray, out hit)) {
+                        checkpoint.transform.position = hit.point;
+                    }
+                }
+                else {
+                    checkpoint.transform.RotateAround(Vector3.up, currentEvent.delta.x/20f);
+                }
+            }
+        }
 
         if (GUI.changed) {
 

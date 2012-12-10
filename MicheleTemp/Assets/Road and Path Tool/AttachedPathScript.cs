@@ -82,7 +82,7 @@ public class AttachedPathScript : MonoBehaviour {
 
 
 
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+   /*     ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit)) {
             Debug.Log("asdsad11122222 ");
             if (!endSelect) {
@@ -106,7 +106,7 @@ public class AttachedPathScript : MonoBehaviour {
 
                 endSelect = false;
             }
-        }
+        }*/
 
     }
 
