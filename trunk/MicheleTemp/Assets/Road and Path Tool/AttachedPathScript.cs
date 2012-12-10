@@ -561,6 +561,8 @@ public class AttachedPathScript : MonoBehaviour {
                 sphere.renderer.sharedMaterial.color = Color.blue;
                 sphere.transform.localScale = new Vector3(5, 5, 5);
                 sphere.transform.position = APS.nodeObjects[i].position;
+                DestroyImmediate(sphere.GetComponent<SphereCollider>());
+                sphere.AddComponent<DestroyOnLoad>();
                 sphere.transform.parent = pathMesh.transform;
             }
 
