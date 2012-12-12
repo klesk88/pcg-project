@@ -172,7 +172,7 @@ public class EditorStreet : Editor {
             if(Physics.Raycast(ray, out hit)) {                
                 if(!checkpointPlacement) {
                     checkpointPlacement = true;
-                    checkpoint = (GameObject)Instantiate(street_creation.path_finder.checkpoint, hit.point, Quaternion.identity);
+                    checkpoint = (GameObject)Instantiate(street_creation.path_finder.checkpoint, hit.point/* + new Vector3(0,2,0)*/, Quaternion.identity);
                 }
                 else{
                     checkpointPlacement = false;
@@ -191,6 +191,11 @@ public class EditorStreet : Editor {
                     carPlacement = false;
                     Instantiate(street_creation.path_finder.car, car.transform.position + new Vector3(0,5,0), car.transform.rotation).name = "car";
                     DestroyImmediate(car);
+                    GameObject[] planes = GameObject.FindGameObjectsWithTag("plane");
+                    if (planes != null && planes.Length > 0) {
+                        foreach (GameObject plane in planes)
+                            DestroyImmediate(plane);
+                    }
                     EditorApplication.isPlaying = true;
                     Debug.Log("Car PLACED on track!");
                 }

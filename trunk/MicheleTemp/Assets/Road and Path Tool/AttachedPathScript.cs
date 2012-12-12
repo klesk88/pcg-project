@@ -464,6 +464,22 @@ public class AttachedPathScript : MonoBehaviour {
         return index;
     }
 
+    public int radius() {
+        if (nodeObjects.Length > 1) {
+            Vector3 start = nodeObjects[0].position;
+            Vector3 end = nodeObjects[nodeObjects.Length - 1].position;
+            return (int)(end - start).magnitude;
+        }
+        return 0;
+    }
+
+    public Vector3 center() {
+        if (nodeObjects.Length > 0) {
+            return nodeObjects[(int)nodeObjects.Length / 2].position;
+        }
+        return Vector3.zero;
+    }
+
     public void smoothPath() {
         if (nodeObjects.Length > 2) {
 

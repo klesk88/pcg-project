@@ -33,6 +33,7 @@ public class PathFinder : MonoBehaviour {
         if(car != null && CheckpointMgr.latestCheckpoint != Vector3.zero && Input.GetKeyUp(KeyCode.T)) {
             Debug.Log("Should load from checkpoint now!");
             car.transform.position = CheckpointMgr.latestCheckpoint;
+            car.transform.rotation = CheckpointMgr.orientation;
         }
 	}
 
@@ -189,7 +190,7 @@ public class PathFinder : MonoBehaviour {
             DestroyImmediate(sphere.GetComponent<SphereCollider>());
             sphere.transform.parent = pathMesh.transform;
         }
-   
+        pathMesh.GetComponent<CollisionMover>().check();
     }
 
     public void clearPathPoints() {
