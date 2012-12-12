@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class BuildingCreation : MonoBehaviour {
 
     public int buildingsToGenerate = 100;
-    public bool generateAllBuildings = false;
+    public bool generateAllBuildings = true;
     public float scalingFactor = 20;
     private List<List<double[]>> data;
     private XMLParser parser;
@@ -55,6 +55,10 @@ public class BuildingCreation : MonoBehaviour {
         //foreach(float f in data[3][3])
         init();
         Debug.Log(data.Count);
+
+
+        GameObject buildings = new GameObject();
+        buildings.name = "Buildings";
         for (int i = 0; i < (generateAllBuildings ? data.Count : buildingsToGenerate); i++)
         {
             if (data[i].Count <= 2)
@@ -65,7 +69,7 @@ public class BuildingCreation : MonoBehaviour {
             // building.AddComponent("CollisionDetection");
             //@Michele: add for reference in a simple way all the buildings in case of collision
             //building.tag = "Building";
-            building.transform.parent = this.gameObject.transform;
+            building.transform.parent = /*this*/buildings.gameObject.transform;
             int j = 0;
             int height = 0;
             float minX = Mathf.Infinity, maxX = -Mathf.Infinity, minZ = Mathf.Infinity, maxZ = -Mathf.Infinity;

@@ -26,7 +26,7 @@ public class StreetCreation : MonoBehaviour {
 
    
     public int getNumberOfStreets() {
-        return data.Count;
+        return (data != null ? data.Count : 0);
     }
 
 	public void getData()
@@ -41,6 +41,8 @@ public class StreetCreation : MonoBehaviour {
             data = new List<List<double[]>>();
             data = parser.read("Highway.txt");
         }
+
+      
 
         Terrain terComponent = (Terrain)gameObject.GetComponent(typeof(Terrain));
         TerrainPathCell[] terrainCells = new TerrainPathCell[terComponent.terrainData.heightmapResolution * terComponent.terrainData.heightmapResolution]; ;
@@ -97,6 +99,14 @@ public class StreetCreation : MonoBehaviour {
     private void init()
     {
         path_finder = this.gameObject.AddComponent<PathFinder>();
+
+        if (car == null)
+            car = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Car.prefab", typeof(GameObject));
+        if (checkpoint == null)
+            checkpoint = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Checkpoint.prefab", typeof(GameObject));
+        if (carHelper == null)
+            carHelper = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/carHelper.prefab", typeof(GameObject));
+
         path_finder.car = this.car;
         path_finder.checkpoint = this.checkpoint;
         path_finder.carHelper = this.carHelper;
