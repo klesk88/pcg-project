@@ -4,7 +4,7 @@
 % \documentclass[conference]{./IEEEtran}
 
 % Add and required packages here
-\usepackage{graphicx,times,amsmath}
+\usepackage{graphicx,times,amsmath, hyperref}
 
 % Correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor IEEEtran}
@@ -38,23 +38,23 @@
 
 \section{Introduction}
 
-Open Streets Race is a Unity[1] plug-in created for generate a racing game from data obtained from the open Street Maps[2] site. Open Street Maps is a site similar to Google Maps[3] where the user can select different parts of the earth, but with an important difference: the user can also download parts of the maps obtaining informations about that zone (for example position of the roads, position of the buildings and size of them). These informations can be download as xml files, with nodes representing different objects (for example buildings, streets, parks, rivers, ecc.). The goal of our plug-in is let the user import the data inside the Unity[1] engine in a simple way, and create buildings and roads from generate levels using real cities as bottom line using procedurally generated algorithm. The user then can modify the map generated using the game play layer, where he can decide to smooth the roads, placing checkpoints and cars. In this way, the generation of maps for car racing games are becoming more fast, while giving him control on the results.  Another important aspect of our plug-in is that is easy to include other kind of constraints inside the game play layer, making it easy extendible also for include other kind of genres (like FPS).
+Open Streets Race is a Unity \cite{unity} plug-in created for generate a racing game from data obtained from the open Street Maps \cite{openstreet} site. Open Street Maps is a site similar to Google Maps  \cite{gmaps} where the user can select different parts of the earth, but with an important difference: the user can also download parts of the maps obtaining informations about that zone (for example position of the roads, position of the buildings and size of them). These informations can be download as xml files, with nodes representing different objects (for example buildings, streets, parks, rivers, ecc.). The goal of our plug-in is let the user import the data inside the Unity \cite{unity} engine in a simple way, and create buildings and roads from generate levels using real cities as bottom line using procedurally generated algorithm. The user then can modify the map generated using the game play layer, where he can decide to smooth the roads, placing checkpoints and cars. In this way, the generation of maps for car racing games are becoming more fast, while giving him control on the results.  Another important aspect of our plug-in is that is easy to include other kind of constraints inside the game play layer, making it easy extendible also for include other kind of genres (like FPS).
 
 \section{Backgorund}
 
-This work was inspired by the SketchaWorld system[4]. In this system, the user can concentrate in what they want to create instead of how by using a constraint solving and semantic modelling. This is achieved by dividing the different part of the level creation in different layers. For example, in the first layer (called landscape) the user can create the terrain, modifying the highness of it applying an height map or use the tools inside the editor. In the second (water), the user can create rivers. For do this, he can click on different part of the maps and the pcg algorithm automatically generate the river taking in consideration also the below layer, modifying it if necessary. In fact, in their framework, the layers on top of each other can modify the lower ones, using the constraints inside each of them for resolve the conflicts between layers. Although, the suer can select to create a world from scratch, or import data from Open Street Maps and generate from there the world. \newline
+This work was inspired by the SketchaWorld system \cite{sketchaworld}. In this system, the user can concentrate in what they want to create instead of how by using a constraint solving and semantic modelling. This is achieved by dividing the different part of the level creation in different layers. For example, in the first layer (called landscape) the user can create the terrain, modifying the highness of it applying an height map or use the tools inside the editor. In the second (water), the user can create rivers. For do this, he can click on different part of the maps and the pcg algorithm automatically generate the river taking in consideration also the below layer, modifying it if necessary. In fact, in their framework, the layers on top of each other can modify the lower ones, using the constraints inside each of them for resolve the conflicts between layers. Although, the suer can select to create a world from scratch, or import data from Open Street Maps and generate from there the world. \newline
 While this framework can generate very interesting worlds, with rivers, mountains, roads and cities nice fit together, one critique that can be done is that the, even though was created game developers, the developers haven't add also a game play layer (or take in consideration the game play element). This cause the generation of realistic worlds but no interesting for a game play prospective. For example, in an fps set in a city background, we don't want only the generation of buildings,rivers,roads ecc., but also covers, short cut between buildings, stairs that can make the players reach the roof. 
 \newline
 \newline
-Another paper that inspired this work was Generating Interesting Monopoly Boards from Open Data[5]. In this paper, the authors use Open Data information about the population,reachness and other parameters to generate Monopoly boards. This is done by using an evolving algorithm in which are evolved the different weights for the street creation inside the Monopoly game. The user can decide which indicators use for defining what means prosperity inside an area, and then, after some calculations, the board is generated. This paper is interesting, as it uses real world data for generating Monopoly boards letting the user create is own board based on his knowledge of what it means reach are.
+Another paper that inspired this work was Generating Interesting Monopoly Boards from Open Data \cite{monopoly}. In this paper, the authors use Open Data information about the population,reachness and other parameters to generate Monopoly boards. This is done by using an evolving algorithm in which are evolved the different weights for the street creation inside the Monopoly game. The user can decide which indicators use for defining what means prosperity inside an area, and then, after some calculations, the board is generated. This paper is interesting, as it uses real world data for generating Monopoly boards letting the user create is own board based on his knowledge of what it means reach are.
 \newline
 \newline
-In xx Parish and Mueller \cite{parishxx} developed a system to procedurally generate large city areas based on geographical and sociostastistical maps. Examples hereof are elevation-, vegetation- and population density maps. Based on the image maps, roadmaps were created using an extended L-System that allowed an easy addition of new rules or subsystems (e.g. transportation networks). The roadmap was then used as a basis for subdivision into lots, which provided allotments for the building generation. Buildings were modelled by a parametric, stochastic L-System that used the footprint of the building (allotment) as the axiom. This enabled the L-System to improve the Level of Detail (LOD) of a building with each expansion, such that after one expansion the building was a simple extrusion, after two it could undergo the transformations of the production rule (scale, translate etc.) resulting in more and more submeshes of different dimensions and thereby an increase in detail.
+In 2001 Parish and Mueller \cite{parish} published a about how to procedurally generate large city areas based on geographical and sociostastistical maps. Examples hereof are elevation-, vegetation- and population density maps. Based on the image maps, roadmaps were created using an extended L-System that allowed an easy addition of new rules or subsystems (e.g. transportation networks). The roadmap was then used as a basis for subdivision into lots, which provided allotments for the building generation. Buildings were modelled by a parametric, stochastic L-System that used the footprint of the building (allotment) as the axiom. This enabled the L-System to improve the Level of Detail (LOD) of a building with each expansion, such that after one expansion the building was a simple extrusion, after two it could undergo the transformations of the production rule (scale, translate etc.) resulting in more and more submeshes of different dimensions and thereby an increase in detail.
 
 
 \section{Game Design}
 
-While the main goal of our project is to give to the final user a tool for generating levels from real world data, in our project we focus on building a game play layer for a car racing game from real world cities. The game play is inspired by other racing games as Need For Speed[6], in which the player can race inside a city as in a free roaming game, and in which the different tracks can have also short cuts (that are difficult to take as, for comparison, continue for the main street). Because modelling an entire city from scratch would require too much effort we decide to creating it using procedurally generated algorithms for generate the building and the roads from the data of Open Street Map. In this way, we can also modify the different elements without had the need to re-create big models from scratch, or modify them. For example, instead of try to make fit different shapes of curves, we need only to click where we want the road start and ends, and the algorithm take care of generating the entire street (that can also be modified by the game play layer). Although, having at our disposal this layer make more easy for us try different kind of solutions for the track, improving the final quality of it. 
+While the main goal of our project is to give to the final user a tool for generating levels from real world data, in our project we focus on building a game play layer for a car racing game from real world cities. The game play is inspired by other racing games as Need For Speed \cite{nfs}, in which the player can race inside a city as in a free roaming game, and in which the different tracks can have also short cuts (that are difficult to take as, for comparison, continue for the main street). Because modelling an entire city from scratch would require too much effort we decide to creating it using procedurally generated algorithms for generate the building and the roads from the data of Open Street Map. In this way, we can also modify the different elements without had the need to re-create big models from scratch, or modify them. For example, instead of try to make fit different shapes of curves, we need only to click where we want the road start and ends, and the algorithm take care of generating the entire street (that can also be modified by the game play layer). Although, having at our disposal this layer make more easy for us try different kind of solutions for the track, improving the final quality of it. 
 
 \section{Methods}
 
@@ -62,14 +62,20 @@ In this section we are going to explain the different elements composing our plu
 
 \subsection{Xml Parser}
 
-The first element the user will use is the xml parser. This is a dll file in which the user can select which kind of data import from the xml document download from open Street Maps. For the moment the dll support the export of buildings, streets, rivers and parks. Anyway this is easy extendible by overwriting the right method.  The dll then create a text file with the information that will be processed by the different layers implemented inside Unity. Because Open Street maps can´t export very big maps as xml files, the dll give the possibility also to attached to the same text file nodes from different xml files, leaving to the user completly freeedom on which zones (also caming from different places) he want to use for his level creation and, and how much big the level should be. 
+The first element the user will use is the xml parser. This is a dll file in which the user can select which kind of data import from the xml document download from open Street Maps. For the moment the dll support the export of buildings, streets, rivers and parks. Anyway this is easy extendible by overwriting the right method. 
+While in the start we try to implment a local database where to store the data from the xml files, Unity wasn't capable of access the database. We decide so to create a text file with the information that will be processed by the different layers implemented inside Unity. Because Open Street maps canÂ´t export very big maps as xml files, the dll give the possibility also to attached to the same text file nodes from different xml files, leaving to the user completly freeedom on which zones (also caming from different places) he want to use for his level creation and, and how much big the level should be.
 
 \subsection{Building Layer}
-After parsing the XML file, the sytem can generate buildings based upon the data from the parser. The user can specify if all the buildings should be built (default option) or only a subset. The user is also in control of the minimum and maximum height of the buildings. Each building is then assigned a random height within that interval. Prior to generating the buildings, the LSystem is initialized. Based on the production rule (editable by user) the axiom is expanded for a number of expansions. Then, for each building its lot coordinates are used as vertices for the footprint. These vertices are saved into the initial state of the building. As in a classic turtle-based LSystem, the "drawing" of the building is based on a stack, such that the symbol '[' and ']' respectively pushes the current state to the stack (saving) and assigns the current state to the state popped from the stack (loading). For each building, the expanded axiom is traversed. Normally, the first symbol is 'E', which marks an extrusion. A visualizer class provides functions for extrusion, scaling and translation. Extrusion is performed on the face of the current state. Initially, this is the footprint of the building.
+After parsing the XML file, the sytem can generate buildings based upon the data from the parser. The user can specify if all the buildings should be built (default option) or only a subset. The user is also in control of the minimum and maximum height of the buildings. Each building is then assigned a random height within that interval. Prior to generating the buildings, the LSystem is initialized. Based on the production rule (editable by user) the axiom is expanded for a number of expansions. Then, for each building its lot coordinates are used as vertices for the footprint. These vertices are saved into the initial state of the building. As in a classic turtle-based LSystem, the "drawing" of the building is based on a stack, such that the symbols '[' and ']' respectively pushes the current state to the stack (saving) and assigns the current state to the state popped from the stack (loading). \newline
+
+For each building, the expanded axiom is traversed. Normally, the first symbol is 'E', which marks an extrusion. A visualizer class provides functions for extrusion, scaling and translation. Extrusion is performed on the face of the current state. Initially, this is the footprint of the building. It works by taking a copy of the face vertices and translating them on the z-axis for the specified height. Then, it defines the triangles for vertical sides of the building, followed by the top of the building. It is not necessary to triangulate the bottom side since it will not be visible. Normals are computed my subtracting the position of each vertex with the mean center of all the vertices, and then normalizing the resulting vector. A new game object is added as a chilld to the game object of the current state. A mesh component that is assigned the found vertices, triangles and normals is added to the new game object, and the game object and its top face is assigned to the current state. The scaling function simply scales the game object's transform component and face vertices of the current state. Similarly, the translation function translates the transform and face coordinates.\newline
+
+After visualization, a box collider is added to each building, along with a script that detects colliding roads. This allows for removal of buildings that are in the way of roads.
 
 \subsection{Roads Generation}
 
-For the road generation we decide to use an external plug-in[7] for have the basic functionality of generating a mesh from a predefined set of points. For work, this script need to be attached to a terrain. This give the user the freedom of generated procedurally part of the background, or modify the terrain itself (as creating hills for example), and the roads, as the buildings, automatically position themselves on top of the terrain created. This generator simple take as input the different positions in which the user click on the terrain, search inside the data structure which nodes of the world street map are the most near to them and generate the street. For do that, we have used the A* algorithm, in which the heuristic function is the euclidean distance between the nodes that the user have clicked and the streets inside our list. After we have found the right road, we use the nodes composing the road and pass them to the external plug-in for the mesh generation. This plug-in apply the cubic spline algorithm for approximate the curve between the different nodes and create a smooth path. The cubic spline is an algorithm in which, given  If, between the points that the user has clicked, there is a hill, the algorithm take also care of placing the different parts of the mesh on top of the terrain. 
+For the road generation we decide to use an external plug-in \cite{plugin} for have the basic functionality of generating a mesh from a predefined set of points. For work, this script need to be attached to a terrain. This give the user the freedom of generated procedurally part of the background, or modify the terrain itself (as creating hills for example), and the roads, as the buildings, automatically position themselves on top of the terrain created. This generator simple take as input the different positions in which the user click on the terrain, search inside the data structure which nodes of the world street map are the most near to them and generate the street. For do that, we have used the A* algorithm, in which the heuristic function is the euclidean distance between the nodes that the user have clicked and the streets inside our list. After we have found the right road, we use the nodes composing the road and pass them to the external plug-in for the mesh generation. This plug-in apply a natural cubic spline \cite{spline} function for approximate the curve between the different nodes and create a smooth path. 
+If, between the points that the user has clicked, there is a hill, the algorithm take also care of placing the different parts of the mesh on top of the terrain. 
 
 \subsection{Game Play Layer}
 
@@ -80,49 +86,68 @@ The user can decide which kind of road choose that fit better the level he has i
 \section{Results}
 
 The end results of our plug-in are quite interesting. The development of a race game is speed us quite a lot, as the user doesn't have to create meshes  and can  concentrate his efforts improving the game play. Even the game play layer have decreased the time of development; in fact the end user can for example smooth the path and see different kind of solutions, only with the click of a button.\newline
-Also the results that we had using real world data was interesting.  In fact they give the opportunity to generate real cities that have interesting patterns for generating arcade car racing games (as for example Need For Speed). The opportunity also to use more than one kind of city for generate a single map, give the freedom to the user to generate maps which different topologies that resolves in interesting worlds.
+Also the results that we had using real world data was interesting.  In fact they give the opportunity to generate real cities that have interesting patterns for generating arcade car racing games (as for example Need For Speed). The opportunity also to use more than one kind of city for generate a single map, give the freedom to the user to generate maps which different topologies that resolves in interesting worlds. Below follows some screenshots from the plugin that shows examples of generated buildings, roads, shortcuts, checkpoints and a car racing on one of the created tracks.
+
+\begin{figure}[h!t]
+\centering
+\includegraphics[scale=0.8]{images/BuildingScript.png}
+\caption{\label{buildings} Screenshot of buildings generation}
+\end{figure}
+
+\begin{figure}[h!t]
+\centering
+\includegraphics[scale=0.45]{images/Buildings4.png}
+\caption{\label{buildings} Screenshot of parameters that the user can specify when generating buildings}
+\end{figure}
+
+\begin{figure}[h!t]
+\centering
+\includegraphics[scale=0.3]{images/Checkpoints1.png}
+\caption{\label{buildings} Screenshot of a shortcut with checkpoints}
+\end{figure}
+
+\begin{figure}[h!t]
+\centering
+\includegraphics[scale=0.3]{images/Car1.png}
+\caption{\label{buildings} Screenshot of in-game driving}
+\end{figure}
+
+\subsection{Performance Analysis}
+
+The most time consuming step is the building generation, that takes approximately 1 second for 100 buildings, so for a large city area with 3000 buildings, it takes around half a minute. This can be caused by the high number of instantiations of the game objects and mesh components, as well as the triangulation computations. The second most time consuming process is the parsing of the XML file, which takes around 3 seconds for a file with 40.000 nodes. The rest of the operations, such as road creation, shortcut placement and adding checkpoints takes a couple of hundred milliseconds at most.
 
 \section{Discussion}
 
 While the end results was interesting, there is still room for improvements inside our plug-in.\newline
-The buildings now are generated using cubes as primitives and extrude them. While this 
-
+The xml parser could be improved by use a database, inside of generating and use text files, for access the informations of the different nodes in a more faster, efficient and customize way. In fact, using a SQL database, the user the freedom to generate tables in an easy way and use his own customize tables.\newline
+Now, The buildings are essientally generated using the footprints and extruding them. An improvement could be analyse the different nodes composing a building and use an appropriate shape (for example a cylinder for a round building) from which start from. This can also be used for generate different shapes (like tunnels) that are visually appealing.  An other improvement could also generate buildings that have actually interiors, (like for examples different floors, stairs, ecc). While for a car racing game this is not important, for a FPS this can increase the immersion of the player. An other improvement can be done by implementing different kind of elements, instead of only buildings and roads, like trees, lakes, rivers ecc. On some of the buildings, there were some glitches caused by overlapping triangles defined in the extrusion function. This is caused by convex building lots. As it works now, all the triangles of the top face are drawn from the first vertex to each pair of subsequent vertices. This could be solved by developing a more sophisticated triangulation algorithm, that changes the point starting corner of some of the triangles based on trigonometric calculations of the vertices. 
+\newline
+\newline
+Also the generation of roads can be improve. In fact the generation of the esh, while now is done in a single thread, could be better if it could be done in multi thread (feature not supported by Unity right now). Also the smoothing of the path could be improved by implementing different texture(depending on the type of street) and new elements (like lights, lamps ecc.).Another improvement could be to select different kinds of algorithms depending on the degree of smoothing the user wants. Right now, it is not possible to create sharp corners.
+\newline
+Finally, the game play layer can be improved by including more constraints, as, for example constraints regarding more car driving in the same time (an example of constraint can be the size of the road depending of the number of cars playing the game), different kind of weather and different type of roads.
 
 \begin{thebibliography}{6}
-\bibitem{conf} Unity
+\bibitem{unity} Unity, Unity Technologies, http://unity3d.com/
 
-\bibitem{conf} open Street Maps
+\bibitem{openstreet} Open Street Maps, licensed under the Creative Commons Attribution-ShareAlike 2.0, http://www.openstreetmap.org/
 
-\bibitem{conf} Google maps
+\bibitem{gmaps} Google Maps, http://maps.google.com/
 
-\bibitem{article} sketchaworld
+\bibitem{parish} Parish, Müller, ``Procedural Modeling of Cities", Siggraph, 2001.
 
-\bibitem{article} Generating Interesting Monopoly Boards from Open Data
-Marie Gustafsson Friberger and Julian Togelius
+\bibitem{sketchaworld}
+Smelik, Tutenel, et al. ``A declarative approach to procedural modeling of virtual worlds" in \emph{Computers \& Graphics}, 2011, pp. 352-363.
 
-\bibitem{conf} need for speed
+\bibitem{monopoly} Gustafsson, Togelius. ``Generating Interesting Monopoly Boards from Open Data", 2012.
 
-\bibitem{conf} plugin for street generation
+\bibitem{nfs} Need for Speed, EA Canada et. al, Electronic Arts, 1994-2012.
 
-\bibitem{parishxx}
-B.~Myself, ``This is the title of the journal article,'' \emph{This is the name
-  of the journal}, pp. 1--30, 2007.
+\bibitem{plugin} Chris Morris, ``Road/Path Tool",  Six Times Nothing, 2010.
 
-\bibitem{lsystem}
-B.~Myself, ``This is the title of the journal article,'' \emph{This is the name
-  of the journal}, pp. 1--30, 2007.
+\bibitem{spline} Patch Kessler, ``Natural Cubic Spline Interpolation", February 23, 2006.
 
-\bibitem{book}
-A.~Great, \emph{This is the book title}.\hskip 1em plus 0.5em minus 0.4em\relax
-  This is the name of the publisher, 2006.
 
-\bibitem{conf}
-F.~Author, S.~Author, and T.~NonRelatedAuthor, ``This is the paper title,'' in
-  \emph{This is the proceedings title}, 2008, pp. 1--8.
-
-\bibitem{article}
-B.~Myself, ``This is the title of the journal article,'' \emph{This is the name
-  of the journal}, pp. 1--30, 2007.
 \end{thebibliography}
 
 % That's all folks...
